@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gray-50 text-black overflow-x-hidden antialiased cursor-default;
+    }
+}
+
+@layer components {
+
+    /* 1. Global Grid Background */
+    .bg-grid-pattern {
+        background-size: 20px 20px;
+        background-position: center top;
+    }
+
+    /* 2. Dot Pattern Background */
+    .bg-dot-pattern {
+        background-size: 16px 16px;
+        background-position: center top;
+    }
+
+    /* 2. Hard Border System - Forced Black */
+    .border-black {
+        border-color: #000 !important;
+    }
+
+    /* 3. Hover Invert Effect */
+    .hover-invert {
+        transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .hover-invert:hover {
+        @apply bg-black text-white;
+    }
+
+    /* 4. Button Active State (Shift) */
+    .btn-hard:active {
+        transform: translate(2px, 2px);
+    }
+
+    /* 5. Crosshair Decoration */
+    .crosshair {
+        @apply absolute w-5 h-5 pointer-events-none;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+        content: '';
+        @apply absolute bg-black;
+    }
+
+    .crosshair::before {
+        @apply w-full h-px top-1/2 left-0 -translate-y-1/2;
+    }
+
+    .crosshair::after {
+        @apply h-full w-px left-1/2 top-0 -translate-x-1/2;
+    }
+
+    /* 6. Card Hover Blue Effect */
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-hover:hover {
+        @apply bg-wemd text-white border-wemd;
+    }
+
+    .card-hover:hover i {
+        @apply text-white;
+    }
+
+    .card-hover:hover .text-gray-500 {
+        @apply text-white/90;
+    }
+
+    .card-hover:hover h3 {
+        @apply translate-x-2;
+    }
+}
+
+/* Main Page Heading Line Height */
+main h1 {
+    line-height: 1.2 !important;
+}
+
+/* Preview Render Styles - Matching Editor Colors */
+#preview-render h1 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0025F5;
+    border-bottom: 3px solid #0025F5;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: 0;
+    line-height: 1.2;
+}
+
+#preview-render blockquote {
+    background-color: #F3F4F6;
+    padding: 0.5rem;
+    border-left: 4px solid #9CA3AF;
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    color: #6B7280;
+    font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#preview-render blockquote p {
+    margin: 0;
+}
+
+#preview-render p {
+    font-size: 0.75rem;
+    color: #1F2937;
+    line-height: 1.625;
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+#preview-render h2 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1F2937;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+#preview-render h2::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 16px;
+    background-color: #0025F5;
+}
+
+#preview-render h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+#preview-render ul {
+    font-size: 0.75rem;
+    color: #4B5563;
+    padding-left: 4px;
+    list-style: none;
+    margin: 0;
+}
+
+#preview-render li {
+    margin-bottom: 0.25rem;
+}
+
+#preview-render li::before {
+    content: '•';
+    font-weight: bold;
+    color: #6B7280;
+    margin-right: 0.5rem;
+}
+
+#preview-render strong {
+    font-weight: 700;
+    margin-left: 0.25rem;
+}
+
+/* Code inline */
+#preview-render code {
+    color: #FF6B9D;
+    background-color: #F9FAFB;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Italic */
+#preview-render em {
+    color: #7C3AED;
+    font-style: italic;
+}
+
+/* Links */
+#preview-render a {
+    color: #0025F5;
+    text-decoration: underline;
+}
+
+/* Animations */
+.cursor-blink {
+    @apply animate-blink;
+}

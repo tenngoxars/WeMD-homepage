@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta -->
+    <title>WeMD - 微信公众号 Markdown 排版编辑器 | 开源免费</title>
+    <meta name="description" content="WeMD 是一款专为微信公众号设计的 Markdown 编辑器，支持一键复制到公众号，多种精美主题可选，开源免费，本地优先，无需登录即可使用。">
+    <meta name="keywords" content="微信公众号,Markdown,编辑器,排版,WeMD,开源,免费,公众号排版,Markdown编辑器">
+    <meta name="author" content="WeMD Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://wemd.app/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="WeMD - 微信公众号 Markdown 排版编辑器">
+    <meta property="og:description" content="专为微信公众号设计的 Markdown 编辑器，完美复制粘贴，多种主题可选，开源免费">
+    <meta property="og:image" content="https://wemd.app/og-image.png">
+    <meta property="og:url" content="https://wemd.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="WeMD">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WeMD - 微信公众号 Markdown 编辑器">
+    <meta name="twitter:description" content="开源免费，本地优先，完美支持微信公众号排版">
+    <meta name="twitter:image" content="https://wemd.app/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Main Script -->
+    <script type="module" src="/src/main.js"></script>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "WeMD",
+        "description": "专为微信公众号设计的 Markdown 排版编辑器",
+        "applicationCategory": "Productivity",
+        "operatingSystem": "Web, macOS, Windows, Linux",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "CNY"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "WeMD Team"
+        },
+        "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
+
+    <style>
+        /* Visual Cloak: Prevent FOUC */
+        body {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans selection:bg-wemd selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-white border-b border-black">
+        <div class="flex justify-between items-stretch h-14">
+            <!-- Logo -->
+            <div class="flex items-center justify-center px-6 border-r border-black bg-wemd text-white min-w-[120px]">
+                <span class="font-bold text-xl tracking-tighter">WeMD.</span>
+            </div>
+
+            <!-- Ticker -->
+            <div class="flex-1 flex items-center overflow-hidden bg-white relative">
+                <div
+                    class="whitespace-nowrap font-mono text-xs uppercase tracking-wide flex animate-[scroll_15s_linear_infinite]">
+                    <span class="mx-8">/// MARKDOWN TO WECHAT</span>
+                    <span class="mx-8">/// LOCAL FIRST</span>
+                    <span class="mx-8">/// OPEN SOURCE</span>
+                    <span class="mx-8">/// PIXEL PERFECT</span>
+                    <span class="mx-8">/// NO CLOUD LOCK-IN</span>
+                    <!-- Repeat -->
+                    <span class="mx-8">/// MARKDOWN TO WECHAT</span>
+                    <span class="mx-8">/// LOCAL FIRST</span>
+                    <span class="mx-8">/// OPEN SOURCE</span>
+                    <span class="mx-8">/// PIXEL PERFECT</span>
+                    <span class="mx-8">/// NO CLOUD LOCK-IN</span>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="hidden md:flex">
+                <a href="https://github.com/tenngoxars/WeMD"
+                    class="flex items-center px-8 border-l border-black text-sm font-bold uppercase hover-invert cursor-pointer">
+                    <i data-lucide="github" class="w-4 h-4 mr-2"></i>
+                    Github
+                </a>
+                <a href="https://github.com/tenngoxars/WeMD/releases"
+                    class="flex items-center px-8 border-l border-black bg-black text-white text-sm font-bold uppercase hover:bg-wemd hover:border-wemd transition-colors cursor-pointer">
+                    [ Download ]
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="mt-14 w-full border-b border-black bg-gray-50 relative">
+        <!-- Crosshairs -->
+        <div class="crosshair top-[-10px] left-[-10px]"></div>
+        <div class="crosshair bottom-[-10px] right-[-10px]"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-3.5rem)]">
+
+            <!-- Left: Type Statement -->
+            <div class="lg:col-span-7 border-r border-black p-8 md:p-16 flex flex-col relative overflow-hidden">
+                <!-- Background Big Text -->
+                <div
+                    class="absolute -top-10 -left-10 text-[20rem] font-bold text-gray-100 opacity-30 select-none z-0 pointer-events-none">
+                    MD</div>
+
+                <div class="relative z-10">
+                    <div class="font-mono text-xs mb-4 flex items-center gap-2">
+                        <div class="w-2 h-2 bg-wemd"></div>
+                        THE DEFINITIVE ANSWER.
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-snug mb-12 text-black">
+                        更优雅的 <span class="text-wemd tracking-normal">MARKDOWN</span><br>
+                        公众号排版工具<span class="text-wemd">.</span>
+                    </h1>
+                </div>
+
+                <!-- Middle Group: Description + Buttons -->
+                <div class="relative z-10 flex flex-col flex-1 gap-10 mt-8 mb-8">
+                    <p
+                        class="text-lg md:text-xl font-mono text-gray-800 max-w-md leading-loose border-l-2 border-wemd pl-6">
+                        告别复杂工具。<br>
+                        Markdown 写作，一键复制到公众号。<br>
+                        专为公众号创作者设计的<span class="text-wemd font-bold">本地编辑器</span>。
+                    </p>
+
+                    <div class="flex gap-4">
+                        <a href="https://github.com/tenngoxars/WeMD/releases"
+                            class="btn-hard border border-black bg-black text-white px-8 py-4 font-mono font-bold text-sm uppercase hover:bg-wemd hover:border-wemd transition-colors">
+                            [ Start Writing ]
+                        </a>
+                        <a href="https://github.com/tenngoxars/WeMD"
+                            class="btn-hard border border-black bg-white text-black px-8 py-4 font-mono font-bold text-sm uppercase hover-invert transition-colors flex items-center gap-2">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Github
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bottom: Technical Specs -->
+                <div class="relative z-10 mt-auto mb-20">
+                    <div
+                        class="py-4 border-y border-black font-mono text-[10px] grid grid-cols-2 gap-y-2 gap-x-8 max-w-xs text-gray-500 tracking-wider">
+                        <div class="flex justify-between items-center group cursor-default">
+                            <span>/// VER</span>
+                            <span class="text-black font-bold group-hover:text-wemd transition-colors">1.0</span>
+                        </div>
+                        <div class="flex justify-between items-center group cursor-default">
+                            <span>/// BUILD</span>
+                            <span class="text-black font-bold group-hover:text-wemd transition-colors">STABLE</span>
+                        </div>
+                        <div class="flex justify-between items-center group cursor-default">
+                            <span>/// LIC</span>
+                            <span class="text-black font-bold group-hover:text-wemd transition-colors">MIT</span>
+                        </div>
+                        <div class="flex justify-between items-center group cursor-default">
+                            <span>/// CORE</span>
+                            <span class="text-black font-bold group-hover:text-wemd transition-colors">ELECTRON</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Editor Preview -->
+            <div class="lg:col-span-5 bg-gray-100 flex flex-col">
+                <!-- Status Bar -->
+                <div class="h-10 border-b border-black bg-white flex items-center justify-between px-4">
+                    <span class="font-mono text-xs uppercase">WeMD_v1.0</span>
+                    <div class="flex gap-1">
+                        <div class="w-3 h-3 border border-black bg-white"></div>
+                        <div class="w-3 h-3 border border-black bg-black"></div>
+                    </div>
+                </div>
+
+                <!-- Comparison Container -->
+                <div class="flex-1 flex flex-col h-full relative group">
+
+                    <!-- Code Layer -->
+                    <div class="flex-1 border-b border-black p-8 font-mono text-sm overflow-hidden bg-gray-50 relative">
+                        <div class="absolute top-0 right-0 bg-black text-white text-[10px] px-2 py-1 font-bold">SOURCE
+                        </div>
+                        <div
+                            class="text-gray-400 select-none absolute left-4 top-8 flex flex-col text-[10px] font-mono leading-6">
+                            <span class="h-6 flex items-center">01</span>
+                            <span class="h-6 flex items-center">02</span>
+                            <span class="h-6 flex items-center">03</span>
+                            <span class="h-6 flex items-center">04</span>
+                            <span class="h-6 flex items-center">05</span>
+                            <span class="h-6 flex items-center">06</span>
+                            <span class="h-6 flex items-center">07</span>
+                            <span class="h-6 flex items-center">08</span>
+                            <span class="h-6 flex items-center">09</span>
+                            <span class="h-6 flex items-center">10</span>
+                        </div>
+                        <div class="pl-8 h-full relative z-20 font-mono text-[13px] leading-6">
+                            <!-- Highlight Layer (Visual) -->
+                            <pre id="editor-highlight" aria-hidden="true"
+                                class="absolute inset-0 pointer-events-none p-0 m-0 w-full h-full whitespace-pre-wrap break-all text-gray-800 font-mono text-[13px] leading-6"></pre>
+
+                            <!-- Input Layer (Interactive) -->
+                            <textarea id="editor-input"
+                                class="absolute inset-0 w-full h-full bg-transparent border-0 p-0 m-0 font-mono text-[13px] leading-6 resize-none focus:ring-0 focus:outline-none text-transparent caret-black"
+                                spellcheck="false"></textarea>
+
+                            <!-- Static Cursor (Line 10, shown when unfocused) -->
+                            <div id="static-cursor" class="absolute pointer-events-none w-2 h-4 bg-black animate-blink"
+                                style="left: 0; top: 220px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Render Layer -->
+                    <div class="flex-1 p-8 bg-gray-100 relative overflow-auto flex items-center justify-center">
+                        <div class="absolute top-0 right-0 bg-wemd text-white text-[10px] px-2 py-1 font-bold z-10">
+                            RENDER
+                        </div>
+                        <div id="preview-render"
+                            class="bg-white border border-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 w-[320px] transform group-hover:-translate-y-1 transition-transform duration-300 min-h-[240px]">
+                            <!-- Content will be injected here by main.js -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Grid -->
+    <section class="w-full border-b border-black bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-3">
+
+            <!-- Feature 1 -->
+            <div
+                class="border-b md:border-b-0 md:border-r border-black p-12 card-hover group h-64 flex flex-col justify-between cursor-default">
+                <div class="flex justify-between items-start">
+                    <span
+                        class="font-mono text-xs border border-black rounded-full px-2 py-0.5 group-hover:border-white">01</span>
+                    <i data-lucide="palette" class="w-6 h-6 transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl mb-2 transition-transform duration-300">CSS 主题引擎</h3>
+                    <p class="font-mono text-xs text-gray-500 leading-relaxed">
+                        内置十余款高定主题。<br>
+                        支持 CSS 深度定制，<br>
+                        完全掌控视觉。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div
+                class="border-b md:border-b-0 md:border-r border-black p-12 card-hover group h-64 flex flex-col justify-between cursor-default">
+                <div class="flex justify-between items-start">
+                    <span
+                        class="font-mono text-xs border border-black rounded-full px-2 py-0.5 group-hover:border-white">02</span>
+                    <i data-lucide="hard-drive" class="w-6 h-6 transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl mb-2 transition-transform duration-300">Local First</h3>
+                    <p class="font-mono text-xs text-gray-500 leading-relaxed">
+                        基于本地文件系统。<br>
+                        无云端锁定，<br>
+                        数据完全私有。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="p-12 card-hover group h-64 flex flex-col justify-between cursor-default">
+                <div class="flex justify-between items-start">
+                    <span
+                        class="font-mono text-xs border border-black rounded-full px-2 py-0.5 group-hover:border-white">03</span>
+                    <i data-lucide="copy" class="w-6 h-6 transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl mb-2 transition-transform duration-300">一键发布</h3>
+                    <p class="font-mono text-xs text-gray-500 leading-relaxed">
+                        像素级还原。<br>
+                        点击复制，<br>
+                        直接粘贴。
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-8">
+            <div>
+                <h2 class="text-4xl font-bold tracking-tighter mb-4">WeMD.</h2>
+                <div class="font-mono text-xs text-gray-400 max-w-xs">
+                    MARKDOWN EDITOR FOR WECHAT OFFICIAL ACCOUNT<br>
+                    OPEN SOURCE · MIT LICENSE<br>
+                    MADE FOR CREATORS
+                </div>
+            </div>
+            <div class="flex gap-8 font-mono text-xs">
+                <a href="https://github.com/tenngoxars/WeMD" class="hover:text-wemd transition-colors">[ GITHUB ]</a>
+            </div>
+        </div>
+        <div class="w-full h-px bg-white/20 my-8"></div>
+        <div class="text-center font-mono text-[10px] text-gray-500">
+            © 2025 WeMD TEAM. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+
+</body>
+
+</html>
