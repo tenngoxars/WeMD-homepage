@@ -1,0 +1,8 @@
+# WeMD Homepage robots.txt
+# https://wemd.app/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://wemd.app/sitemap.xml
