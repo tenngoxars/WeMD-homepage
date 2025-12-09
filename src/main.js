@@ -1,5 +1,5 @@
 import './style.css';
-import { createIcons, icons } from 'lucide';
+import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, UploadCloud, Laptop, Code2 } from 'lucide';
 import { marked } from 'marked';
 
 // Visual Cloak
@@ -8,7 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.opacity = '1';
 
     // Icons
-    createIcons({ icons });
+    createIcons({
+        icons: {
+            BookOpen,
+            Github,
+            Palette,
+            HardDrive,
+            Copy,
+            CloudUpload: UploadCloud, // Map old name/alias if needed
+            Laptop,
+            Code2
+        }
+    });
 
     // Live Editor Logic
     initEditor();
