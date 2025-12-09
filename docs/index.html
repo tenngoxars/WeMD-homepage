@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助文档 - WeMD | 微信公众号 Markdown 排版编辑器</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="WeMD 帮助文档。学习如何使用 WeMD 进行微信公众号 Markdown 排版，包括快速上手教程、图床配置、主题定制等完整指南。">
+    <meta name="keywords" content="WeMD, 微信公众号, Markdown, 排版, 编辑器, 教程, 文档">
+    <meta name="author" content="WeMD Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://wemd.app/docs/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wemd.app/docs/">
+    <meta property="og:title" content="帮助文档 - WeMD">
+    <meta property="og:description" content="WeMD 帮助文档。学习如何使用 WeMD 进行微信公众号 Markdown 排版，包括快速上手教程、图床配置、主题定制等完整指南。">
+    <meta property="og:image" content="https://wemd.app/og-image.png">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="WeMD">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://wemd.app/docs/">
+    <meta name="twitter:title" content="帮助文档 - WeMD">
+    <meta name="twitter:description" content="WeMD 帮助文档。学习如何使用 WeMD 进行微信公众号 Markdown 排版。">
+    <meta name="twitter:image" content="https://wemd.app/og-image.png">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "WeMD 帮助文档",
+        "url": "https://wemd.app/docs/",
+        "description": "WeMD 是一款专为微信公众号设计的 Markdown 排版编辑器，支持本地优先、多主题切换。",
+        "publisher": {
+            "@type": "Organization",
+            "name": "WeMD Team",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://wemd.app/favicon.svg"
+            }
+        }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Highlight.js Theme (Dark for better contrast with prose-pre) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <style>
+        /* Override Tailwind Typography's default pre background to match HLJS Github Dark */
+        .prose pre {
+            background-color: #0d1117 !important;
+            color: #c9d1d9 !important;
+            margin-top: 1.5em;
+            margin-bottom: 1.5em;
+            border-radius: 0.5rem;
+            border: 1px solid #30363d;
+        }
+
+        /* Ensure code block text shouldn't be overridden */
+        .prose pre code {
+            background-color: transparent !important;
+            color: inherit !important;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Remove default backticks from Tailwind Typography for inline code */
+        .prose :where(code):not(:where([class~="not-prose"] *))::before,
+        .prose :where(code):not(:where([class~="not-prose"] *))::after {
+            content: "" !important;
+        }
+
+        /* Style inline code to look nice without backticks */
+        .prose code {
+            color: #24292e;
+            background-color: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+
+        /* Clean scrollbar for code blocks */
+        .prose pre::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .prose pre::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+
+        .prose pre::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Fix anchor positioning with sticky header */
+        .prose h2,
+        .prose h3 {
+            scroll-margin-top: 6rem;
+            /* 3.5rem header + 2.5rem buffer */
+        }
+
+        /* Fix ToC link colors - override browser default blue */
+        #page-toc a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        #page-toc a:hover {
+            color: #002fea;
+        }
+
+        #page-toc a.active {
+            color: #002fea;
+            border-left-color: #002fea;
+        }
+    </style>
+    <!-- Reusing Main Script/CSS for Tailwind -->
+    <script type="module" src="/src/main.js"></script>
+</head>
+
+<body class="font-sans antialiased text-black bg-white selection:bg-wemd selection:text-white"
+    style="visibility: hidden; opacity: 0; transition: opacity 0.3s ease;">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white border-b border-black">
+        <div class="flex justify-between items-stretch h-14">
+            <!-- Logo -->
+            <a href="/"
+                class="flex items-center justify-center px-6 border-r border-black bg-wemd text-white min-w-[120px]">
+                <span class="font-bold text-xl tracking-tighter">WeMD.</span>
+            </a>
+
+            <!-- Header Title -->
+            <div class="flex-1 flex items-center px-6">
+                <span class="font-mono text-xs uppercase tracking-wide">/// DOCUMENTATION</span>
+            </div>
+
+            <!-- Links -->
+            <div class="hidden md:flex">
+                <a href="/"
+                    class="flex items-center px-8 border-l border-black text-sm font-bold uppercase hover-invert cursor-pointer">
+                    Home
+                </a>
+                <a href="https://github.com/tenngoxars/WeMD" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center px-8 border-l border-black text-sm font-bold uppercase hover-invert cursor-pointer">
+                    <i data-lucide="github" class="w-4 h-4 mr-2"></i>
+                    Github
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="mt-14 min-h-[calc(100vh-3.5rem)] flex flex-col md:flex-row max-w-screen-2xl mx-auto">
+
+        <!-- Sidebar (Left) -->
+        <aside
+            class="w-full md:w-64 border-b md:border-b-0 md:border-r border-black bg-gray-50 flex-shrink-0 relative z-10">
+            <div class="sticky top-14 p-8 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
+                <nav class="space-y-8 font-sans">
+                    <!-- About -->
+                    <div>
+                        <div class="font-bold mb-3 uppercase text-xs tracking-wider text-gray-400">关于</div>
+                        <ul class="space-y-1">
+                            <li><a href="#about/about.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="about/about.md">关于 WeMD</a></li>
+                            <li><a href="#about/faq.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="about/faq.md">常见问题</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Tutorials -->
+                    <div>
+                        <div class="font-bold mb-3 uppercase text-xs tracking-wider text-gray-400">入门教程</div>
+                        <ul class="space-y-1">
+                            <li><a href="#tutorials/quick-start-user.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="tutorials/quick-start-user.md">用户快速上手</a></li>
+                            <li><a href="#tutorials/quick-start-dev.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="tutorials/quick-start-dev.md">开发者快速上手</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Guides -->
+                    <div>
+                        <div class="font-bold mb-3 uppercase text-xs tracking-wider text-gray-400">操作指南</div>
+                        <ul class="space-y-1">
+                            <li><a href="#guides/setup-image-hosting.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="guides/setup-image-hosting.md">配置图床</a></li>
+                            <li><a href="#guides/create-theme.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="guides/create-theme.md">新增自定义主题</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Reference -->
+                    <div>
+                        <div class="font-bold mb-3 uppercase text-xs tracking-wider text-gray-400">技术参考</div>
+                        <ul class="space-y-1">
+                            <li><a href="#reference/hotkeys.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="reference/hotkeys.md">快捷键列表</a></li>
+                            <li><a href="#reference/project-structure.md"
+                                    class="block py-1 hover:text-wemd transition-colors text-gray-700 text-sm"
+                                    data-doc="reference/project-structure.md">项目结构</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content Area Wrapper -->
+        <div class="flex-1 flex flex-row relative min-w-0">
+
+            <!-- Content -->
+            <main class="flex-1 p-8 md:p-12 lg:p-16 min-w-0">
+                <div id="content-area"
+                    class="prose prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-wemd max-w-none">
+                    <!-- Markdown Content Will Be Rendered Here -->
+                    <div class="animate-pulse flex space-x-4">
+                        <div class="flex-1 space-y-6 py-1">
+                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div class="space-y-3">
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="mt-20 pt-8 border-t border-gray-200 text-sm text-gray-400 font-mono">
+                    <p>© 2025 WeMD Team. Open Source under MIT License.</p>
+                </footer>
+            </main>
+
+            <!-- Sidebar (Right - ToC) -->
+            <aside class="hidden xl:block w-64 border-l border-gray-100 flex-shrink-0">
+                <div class="sticky top-14 p-8 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
+                    <div class="font-bold mb-4 text-xs uppercase text-gray-400 tracking-wider">On this page</div>
+                    <div id="page-toc" class="space-y-1 text-sm text-gray-500">
+                        <!-- ToC Items will be injected here -->
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { marked } from 'marked';
+        import { markedHighlight } from "marked-highlight";
+        import hljs from 'highlight.js';
+
+        // Initialize Marked with Highlighting
+        const renderer = new marked.Renderer();
+
+        marked.use(
+            markedHighlight({
+                langPrefix: 'hljs language-',
+                highlight(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                }
+            })
+        );
+
+        // Custom Extension for Container Blocks (::: tip/warning/etc)
+        const containerExtension = {
+            name: 'container',
+            level: 'block',
+            start(src) { return src.match(/:::/)?.index; },
+            tokenizer(src) {
+                const rule = /^::: *(\w+)(?: +([^\n]+))?\n([\s\S]+?)\n:::(?:\n|$)/;
+                const match = rule.exec(src);
+                if (match) {
+                    return {
+                        type: 'container',
+                        raw: match[0],
+                        variant: match[1].trim(),
+                        title: match[2] ? match[2].trim() : '',
+                        content: this.lexer.blockTokens(match[3].trim(), [])
+                    };
+                }
+            },
+            renderer(token) {
+                const variant = token.variant;
+                const title = token.title || variant.toUpperCase();
+
+                let colorClass = 'bg-gray-100 border-gray-500'; // Default
+                let icon = 'Info';
+
+                switch (variant) {
+                    case 'tip':
+                    case 'info':
+                        colorClass = 'bg-blue-50 border-blue-500 text-blue-900';
+                        icon = '💡';
+                        break;
+                    case 'warning':
+                        colorClass = 'bg-yellow-50 border-yellow-500 text-yellow-900';
+                        icon = '⚠️';
+                        break;
+                    case 'danger':
+                    case 'error':
+                        colorClass = 'bg-red-50 border-red-500 text-red-900';
+                        icon = '🛑';
+                        break;
+                    case 'success':
+                        colorClass = 'bg-green-50 border-green-500 text-green-900';
+                        icon = '✅';
+                        break;
+                }
+
+                const body = this.parser.parse(token.content);
+                return `<div class="${colorClass} border-l-4 p-4 my-6 rounded-r-lg relative" role="alert">
+                    <div class="font-bold flex items-center gap-2 mb-2">
+                        <span>${icon}</span>
+                        <span>${title}</span>
+                    </div>
+                    <div class="text-sm opacity-90">${body}</div>
+                </div>`;
+            }
+        };
+
+        marked.use({ extensions: [containerExtension] });
+
+        const contentArea = document.getElementById('content-area');
+        const sidebarLinks = document.querySelectorAll('[data-doc]');
+        const pageTocContainer = document.getElementById('page-toc');
+        let observer = null;
+
+        async function loadDoc(docName) {
+            try {
+                // Remove active class from all
+                sidebarLinks.forEach(link => {
+                    link.classList.remove('text-wemd', 'font-bold');
+                    link.classList.add('text-gray-700');
+                });
+
+                // Set active class
+                const activeLink = document.querySelector(`[data-doc="${docName}"]`);
+                if (activeLink) {
+                    activeLink.classList.remove('text-gray-700');
+                    activeLink.classList.add('text-wemd', 'font-bold');
+                }
+
+                const response = await fetch(`/docs/${docName}`);
+                if (!response.ok) throw new Error('Document not found');
+                const text = await response.text();
+
+                // Parse with configured marked
+                contentArea.innerHTML = marked.parse(text);
+                window.scrollTo(0, 0); // Scroll to top
+
+                // Generate shared ToC
+                generateToC();
+
+                // Initialize Scroll Spy
+                initScrollSpy();
+
+            } catch (error) {
+                console.error(error);
+                contentArea.innerHTML = `<div class="text-red-500 p-4 border border-red-200 bg-red-50 rounded">
+                    <strong>无法加载文档</strong><br>
+                    <span class="text-sm">${error.message}</span>
+                </div>`;
+            }
+        }
+
+        function generateToC() {
+            if (!pageTocContainer) return;
+            pageTocContainer.innerHTML = '';
+
+            const headings = contentArea.querySelectorAll('h2, h3');
+            if (headings.length === 0) return;
+
+            headings.forEach(h => {
+                const link = document.createElement('a');
+                link.textContent = h.textContent;
+
+                if (!h.id) {
+                    // Generate ID: keep Chinese chars, letters, numbers, hyphens
+                    h.id = h.textContent
+                        .trim()
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\u4e00-\u9fa5\w-]/g, ''); // Allow Chinese + word chars
+                }
+                link.href = '#' + h.id; // Internal page anchor
+                link.dataset.target = h.id; // Store target ID
+
+                let baseClasses = "block transition-colors duration-200 truncate cursor-pointer py-1 border-l-2 border-transparent pl-3 hover:text-wemd";
+
+                if (h.tagName === 'H2') {
+                    link.className = `${baseClasses} text-gray-600 font-medium`;
+                } else if (h.tagName === 'H3') {
+                    link.className = `${baseClasses} text-gray-400 pl-6 text-xs`;
+                }
+
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    // Manual Scroll with Offset to avoid Header overlap
+                    const target = document.getElementById(h.id);
+                    if (target) {
+                        const headerOffset = 100; // 3.5rem (~56px) + ~44px buffer
+                        const elementPosition = target.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
+                };
+
+                pageTocContainer.appendChild(link);
+            });
+        }
+
+        function initScrollSpy() {
+            if (observer) observer.disconnect();
+
+            const headings = contentArea.querySelectorAll('h2, h3');
+            if (headings.length === 0) return;
+
+            const tocLinks = pageTocContainer.querySelectorAll('a');
+
+            // IntersectionObserver callback
+            const callback = (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.intersectionRatio >= 0.5) { // Activate when 50% visible or mostly visible
+                        setActiveToc(entry.target.id);
+                    }
+                });
+
+                // Fallback: finding the first heading near top if none intersect fully
+                // (This is often more robust for long sections)
+                // Actually, a simpler strategy for "Reading Mode" spy:
+                // Find all headings that are above the visual viewport center.
+                // The last one of those is the current section.
+            };
+
+            // Better Spy Strategy: Highlight the heading that is closest to the top of the viewport
+            // We use a scroll handler instead of IntersectionObserver for "current section" logic which is often more accurate than simple intersection.
+
+            const handleScroll = () => {
+                let currentId = '';
+
+                // Buffer to account for sticky header
+                const buffer = 150;
+
+                headings.forEach(h => {
+                    const top = h.getBoundingClientRect().top;
+                    if (top < buffer) {
+                        currentId = h.id;
+                    }
+                });
+
+                if (currentId) {
+                    setActiveToc(currentId);
+                } else if (headings.length > 0 && window.scrollY < 100) {
+                    // If at very top, highlight first
+                    setActiveToc(headings[0].id);
+                }
+            };
+
+            window.removeEventListener('scroll', handleScroll);
+            window.addEventListener('scroll', handleScroll, { passive: true });
+
+            // Trigger once
+            handleScroll();
+        }
+
+        function setActiveToc(id) {
+            const links = pageTocContainer.querySelectorAll('a');
+            links.forEach(link => {
+                if (link.dataset.target === id) {
+                    link.classList.remove('border-transparent', 'text-gray-600', 'text-gray-400');
+                    link.classList.add('border-wemd', 'text-wemd');
+                } else {
+                    link.classList.add('border-transparent');
+                    link.classList.remove('border-wemd', 'text-wemd');
+                    // Reset colors based on level (preserved from generation)
+                    if (link.classList.contains('pl-6')) { // H3
+                        link.classList.add('text-gray-400');
+                    } else { // H2
+                        link.classList.add('text-gray-600');
+                    }
+                }
+            });
+        }
+
+
+        function handleHash() {
+            // Hash format: #tutorials/quick-start-user.md
+            // OR if empty -> default
+            let hash = window.location.hash.substring(1);
+
+            // Remove any potential internal anchor (e.g. #tutorials/guide.md#section-1)
+            // But actually we are using single hash for routing. 
+            // If user wants to link to section, we might need more complex routing.
+            // For now, let's treat the whole hash as the doc path if it ends with .md
+
+            if (!hash) {
+                hash = 'tutorials/quick-start-user.md'; // Default Home
+            }
+
+            if (hash.endsWith('.md')) {
+                loadDoc(hash);
+            }
+        }
+
+        window.addEventListener('hashchange', handleHash);
+
+        // Initial Load
+        handleHash();
+
+    </script>
+</body>
+
+</html>
