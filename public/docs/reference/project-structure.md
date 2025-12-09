@@ -45,7 +45,7 @@ apps/web/src/
 │       ├── IndexedDBAdapter.ts   # 浏览器存储
 │       └── FileSystemAdapter.ts  # 本地文件夹
 ├── hooks/            # 自定义 Hooks
-├── services/         # 业务服务（图床上传、快捷键）
+├── services/         # 业务服务（图床上传）
 └── styles/           # 全局样式
 ```
 
@@ -57,8 +57,7 @@ apps/web/src/
 | 预览区渲染 | `components/Preview/MarkdownPreview.tsx` |
 | 主题管理 | `components/Theme/ThemePanel.tsx` |
 | 内置主题列表 | `store/editorStore.ts` 的 `builtInThemes` |
-| 图床上传 | `services/imageHostManager.ts` |
-| 快捷键 | `services/hotkeys.ts` |
+| 图床上传 | `services/image/` |
 
 ---
 
