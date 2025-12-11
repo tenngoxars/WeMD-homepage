@@ -286,6 +286,7 @@
         import json from 'highlight.js/lib/languages/json';
         import markdown from 'highlight.js/lib/languages/markdown';
         import diff from 'highlight.js/lib/languages/diff';
+        import plaintext from 'highlight.js/lib/languages/plaintext';
 
         hljs.registerLanguage('bash', bash);
         hljs.registerLanguage('javascript', javascript);
@@ -296,6 +297,7 @@
         hljs.registerLanguage('json', json);
         hljs.registerLanguage('markdown', markdown);
         hljs.registerLanguage('diff', diff);
+        hljs.registerLanguage('plaintext', plaintext);
 
         // Initialize Marked with Highlighting
         const renderer = new marked.Renderer();
