@@ -12,9 +12,7 @@ WeMD/
 │   ├── web/              # Web 版编辑器
 │   └── electron/         # 桌面版外壳
 ├── packages/             # 共享代码
-│   ├── core/             # 核心库（Markdown 解析、主题）
-│   ├── config/           # 共享配置
-│   └── ui/               # 共享 UI 组件
+│   └── core/             # 核心库（Markdown 解析、主题）
 ├── templates/            # 主题 CSS 模板
 ├── scripts/              # 构建脚本
 └── turbo.json            # TurboRepo 配置
@@ -35,9 +33,14 @@ apps/web/src/
 │   ├── Preview/      # 预览区
 │   ├── Header/       # 顶部导航
 │   ├── Sidebar/      # 文件侧边栏
-│   └── Theme/        # 主题管理面板
+│   ├── Theme/        # 主题管理面板
+│   ├── History/      # 历史记录与版本
+│   ├── Settings/     # 设置面板 (图床等)
+│   └── Welcome/      # 首次使用欢迎页
 ├── store/            # Zustand 状态管理
-│   ├── editorStore.ts    # 编辑器状态（内容、主题）
+│   ├── editorStore.ts    # 编辑器状态（内容）
+│   ├── themeStore.ts     # 主题状态（样式、切换）
+│   ├── themes/           # 内置主题定义
 │   ├── fileStore.ts      # 文件列表状态
 │   └── historyStore.ts   # 历史记录状态
 ├── storage/          # 存储适配器
@@ -54,10 +57,13 @@ apps/web/src/
 | 想改的功能 | 文件位置 |
 | :--- | :--- |
 | 编辑器行为 | `components/Editor/MarkdownEditor.tsx` |
+| 搜索面板 | `components/Editor/SearchPanel.tsx` |
 | 预览区渲染 | `components/Preview/MarkdownPreview.tsx` |
 | 主题管理 | `components/Theme/ThemePanel.tsx` |
-| 内置主题列表 | `store/editorStore.ts` 的 `builtInThemes` |
+| 内置主题列表 | `store/themes/builtInThemes.ts` |
 | 图床上传 | `services/image/` |
+| 图床设置 | `components/Settings/ImageHostSettings.tsx` |
+| 历史记录管理 | `components/History/HistoryManager.tsx` |
 
 ---
 
