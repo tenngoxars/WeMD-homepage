@@ -421,16 +421,29 @@
             const headings = contentArea.querySelectorAll('h2, h3');
             if (headings.length === 0) return;
 
+            // Track used IDs to ensure uniqueness (e.g., multiple "新功能" sections)
+            const usedIds = new Map();
+
             headings.forEach(h => {
                 const link = document.createElement('a');
                 link.textContent = h.textContent;
 
                 if (!h.id) {
-                    // Generate ID: keep Chinese chars, letters, numbers, hyphens
-                    h.id = h.textContent
+                    // Generate base ID: keep Chinese chars, letters, numbers, hyphens
+                    let baseId = h.textContent
                         .trim()
                         .replace(/\s+/g, '-')
                         .replace(/[^\u4e00-\u9fa5\w-]/g, ''); // Allow Chinese + word chars
+
+                    // Ensure uniqueness by appending counter suffix
+                    if (usedIds.has(baseId)) {
+                        const count = usedIds.get(baseId) + 1;
+                        usedIds.set(baseId, count);
+                        h.id = `${baseId}-${count}`;
+                    } else {
+                        usedIds.set(baseId, 1);
+                        h.id = baseId;
+                    }
                 }
                 link.href = '#' + h.id; // Internal page anchor
                 link.dataset.target = h.id; // Store target ID
