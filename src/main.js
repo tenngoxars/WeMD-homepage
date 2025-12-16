@@ -1,11 +1,17 @@
 import './style.css';
-import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, UploadCloud, Laptop, Code2 } from 'lucide';
+import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, UploadCloud, Laptop, Code2, ArrowRight, Menu, X } from 'lucide';
 import { marked } from 'marked';
+import { markedHighlight } from "marked-highlight";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 
 // Visual Cloak
 document.addEventListener('DOMContentLoaded', () => {
-    document.body.style.visibility = 'visible';
-    document.body.style.opacity = '1';
+    // Instant reveal using RAF to ensure next frame paint
+    requestAnimationFrame(() => {
+        document.body.style.opacity = '1';
+        document.body.style.pointerEvents = 'auto';
+    });
 
     // Icons
     createIcons({
@@ -15,15 +21,67 @@ document.addEventListener('DOMContentLoaded', () => {
             Palette,
             HardDrive,
             Copy,
-            CloudUpload: UploadCloud, // Map old name/alias if needed
+            CloudUpload: UploadCloud,
             Laptop,
-            Code2
+            Code2,
+            ArrowRight,
+            Menu,
+            X
         }
     });
+
+    // Mobile Menu Logic
+    initMobileMenu();
 
     // Live Editor Logic
     initEditor();
 });
+
+// Mobile Menu Toggle
+function initMobileMenu() {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const menu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    const drawer = document.getElementById('mobile-menu-drawer');
+
+    if (!menuBtn || !menu) return;
+
+    const openMenu = () => {
+        // Clear inline styles preventing FOUC
+        menu.style.opacity = '';
+        menu.style.pointerEvents = '';
+        drawer.style.transform = '';
+
+        menu.classList.remove('pointer-events-none', 'opacity-0');
+        menu.classList.add('pointer-events-auto', 'opacity-100');
+        drawer.classList.remove('translate-x-full');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeMenu = () => {
+        menu.classList.add('pointer-events-none', 'opacity-0');
+        menu.classList.remove('pointer-events-auto', 'opacity-100');
+        drawer.classList.add('translate-x-full');
+        document.body.style.overflow = '';
+    };
+
+    menuBtn.addEventListener('click', openMenu);
+    closeBtn?.addEventListener('click', closeMenu);
+    backdrop?.addEventListener('click', closeMenu);
+
+    // Close on link click
+    menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.classList.contains('pointer-events-none')) {
+            closeMenu();
+        }
+    });
+}
 
 // Editor & Preview Logic
 function initEditor() {
@@ -39,9 +97,17 @@ function initEditor() {
 
 将 Markdown 的理性，转化为 **视觉的表达**。
 
-## 核心
-- **自定义样式**
-- **本地化存储**`;
+## 核心特性
+- **自定义样式**：内置多款精选主题。
+- **本地化存储**：数据完全私有。
+- **一键发布**：完美支持微信公众号。
+
+## 代码演示
+\`\`\`javascript
+console.log("Hello, WeMD!");
+\`\`\`
+
+*现在就开始创作吧！*`;
 
     if (!textarea.value) {
         textarea.value = defaultContent;
@@ -59,25 +125,29 @@ function initEditor() {
 
     // Strong (Bold) with semantic coloring
     renderer.strong = (token) => {
-        try {
-            // Marked 5.x+ passes a token object { text: '...', ... }
-            const text = (typeof token === 'object' && token) ? (token.text || token.content || '') : token;
-            const content = String(text || '');
+        // ... (strong renderer code)
+        const text = (typeof token === 'object' && token) ? (token.text || token.content || '') : token;
+        const content = String(text || '');
 
-            if (content.includes('视觉的表达')) {
-                return `<span style="color: #FF6B35; font-weight: bold;">${content}</span>`;
-            } else if (content.includes('自定义样式') || content.includes('本地化存储')) {
-                return `<strong style="color: #1F2937; font-weight: bold;">${content}</strong>`;
-            }
+        if (content.includes('视觉的表达')) {
+            return `<span style="color: #07c160; font-weight: bold;">${content}</span>`;
+        } else if (content.includes('自定义样式') || content.includes('本地化存储')) {
             return `<strong style="color: #1F2937; font-weight: bold;">${content}</strong>`;
-        } catch (e) {
-            console.error(e);
-            return `<strong>${String(token)}</strong>`;
         }
+        return `<strong style="color: #1F2937; font-weight: bold;">${content}</strong>`;
+        // ...
     };
 
+    marked.use(markedHighlight({
+        langPrefix: 'hljs language-',
+        highlight(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        }
+    }));
+
     marked.use({ renderer, breaks: true });
-    console.log('Marked loaded');
+    console.log('Marked loaded with Highlight.js');
 
     // --- 2. Source Highlighter (Left Side) ---
     const highlightSource = (text) => {
@@ -95,7 +165,7 @@ function initEditor() {
         // Apply strict coloring rules based on specific patterns
 
         // H1: # WeMD (Primary Blue)
-        html = html.replace(/^# (.*)$/gm, '<span style="color: #0025F5; font-weight: bold;"># $1</span>');
+        html = html.replace(/^# (.*)$/gm, '<span style="color: #07c160; font-weight: bold;"># $1</span>');
 
         // H2: ## Core (Dark Gray)
         html = html.replace(/^## (.*)$/gm, '<span style="color: #1F2937; font-weight: bold;">## $1</span>');
@@ -109,19 +179,19 @@ function initEditor() {
         // Universal Bold highlighting (Dark Gray default, Orange special)
         html = html.replace(/\*\*(.*?)\*\*/g, (match, content) => {
             if (content.includes('视觉的表达')) {
-                return `<span style="color: #FF6B35; font-weight: bold;">**${content}**</span>`;
+                return `<span style="color: #07c160; font-weight: bold;">**${content}**</span>`;
             }
             return `<span style="color: #1F2937; font-weight: bold;">**${content}**</span>`;
         });
 
         // Inline Code: `...` (Pink accent)
-        html = html.replace(/`([^`]+)`/g, '<span style="color: #FF6B9D; background-color: #F9FAFB; padding: 0.125rem 0.25rem; border-radius: 0.25rem;">`$1`</span>');
+        html = html.replace(/`([^`]+)`/g, '<span style="color: #FF6B9D; background-color: #F3F4F6; padding: 0.125rem 0.25rem; border-radius: 0.25rem;">`$1`</span>');
 
         // Italic: *...* (Purple accent)
         html = html.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<span style="color: #7C3AED; font-style: italic;">*$1*</span>');
 
         // Links: [text](url) (Primary Blue)
-        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span style="color: #0025F5;">[$1]($2)</span>');
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span style="color: #07c160;">[$1]($2)</span>');
 
         // List Bullets: - or * or 1. at clear start of line (Gray)
         html = html.replace(/^(\s*)([-*+]|\d+\.) /gm, '$1<span style="color: #6B7280; font-weight: bold;">$2 </span>');
@@ -152,8 +222,8 @@ function initEditor() {
         }
     };
 
-    // --- 4. Constraints (Max 10 Lines) ---
-    const MAX_LINES = 10;
+    // --- 4. Constraints (Max 20 Lines) ---
+    const MAX_LINES = 20;
 
     textarea.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {

@@ -4,81 +4,86 @@
 
 @layer base {
     body {
-        @apply bg-gray-50 text-black overflow-x-hidden antialiased cursor-default;
+        @apply bg-gray-50 text-gray-900 antialiased cursor-default;
+        /* Noise Texture */
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-gray-300 rounded-full transition-colors;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-400;
     }
 }
 
 @layer components {
 
-    /* 1. Global Grid Background */
-    .bg-grid-pattern {
-        background-size: 20px 20px;
-        background-position: center top;
+    /* ============================================================
+     * GLASS COMPONENTS - SINGLE SOURCE OF TRUTH
+     * 
+     * These styles handle both appearance AND FOUC prevention.
+     * The animation delays rendering until backdrop-filter is ready.
+     * ============================================================ */
+
+    /* 1. Glass Component - Navbar */
+    .glass {
+        @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-sm;
+        /* GPU acceleration for stable backdrop-filter */
+        will-change: backdrop-filter;
+        transform: translateZ(0);
+        -webkit-backdrop-filter: blur(12px);
+        /* Entrance animation to mask filter calculation */
+        opacity: 0;
+        animation: glass-reveal 0.4s ease-out 0.3s forwards;
     }
 
-    /* 2. Dot Pattern Background */
-    .bg-dot-pattern {
-        background-size: 16px 16px;
-        background-position: center top;
+    /* 2. Glass Card - Content panels */
+    .glass-card {
+        @apply bg-white/60 backdrop-blur-lg border border-white/60 rounded-2xl transition-all duration-300;
+        /* GPU acceleration */
+        will-change: backdrop-filter;
+        transform: translateZ(0);
+        -webkit-backdrop-filter: blur(16px);
+        /* Entrance animation */
+        opacity: 0;
+        animation: glass-reveal 0.5s ease-out 0.4s forwards;
     }
 
-    /* 2. Hard Border System - Forced Black */
-    .border-black {
-        border-color: #000 !important;
+    .glass-card:hover {
+        @apply bg-white/80 shadow-premium -translate-y-1 border-white;
     }
 
-    /* 3. Hover Invert Effect */
-    .hover-invert {
-        transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Glass reveal animation */
+    @keyframes glass-reveal {
+        to {
+            opacity: 1;
+        }
     }
 
-    .hover-invert:hover {
-        @apply bg-black text-white;
+    /* 2. Premium Buttons */
+    .btn-primary {
+        @apply bg-[#07c160] text-white shadow-button-primary border border-transparent rounded-full px-8 py-3 font-bold tracking-wide hover:bg-[#06ad56] hover:shadow-button-primary-hover hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-white/20 ring-inset;
     }
 
-    /* 4. Button Active State (Shift) */
-    .btn-hard:active {
-        transform: translate(2px, 2px);
+    .btn-secondary {
+        @apply bg-white text-gray-700 border border-gray-200 shadow-sm rounded-full px-8 py-3 font-bold tracking-wide hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900 transition-all duration-300;
     }
 
-    /* 5. Crosshair Decoration */
-    .crosshair {
-        @apply absolute w-5 h-5 pointer-events-none;
-    }
-
-    .crosshair::before,
-    .crosshair::after {
-        content: '';
-        @apply absolute bg-black;
-    }
-
-    .crosshair::before {
-        @apply w-full h-px top-1/2 left-0 -translate-y-1/2;
-    }
-
-    .crosshair::after {
-        @apply h-full w-px left-1/2 top-0 -translate-x-1/2;
-    }
-
-    /* 6. Card Hover Blue Effect */
-    .card-hover {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .card-hover:hover {
-        @apply bg-wemd text-white border-wemd;
-    }
-
-    .card-hover:hover i {
-        @apply text-white;
-    }
-
-    .card-hover:hover .text-gray-500 {
-        @apply text-white/90;
-    }
-
-    .card-hover:hover h3 {
-        @apply translate-x-2;
+    /* 3. Typography Decor */
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600;
     }
 }
 
@@ -87,113 +92,133 @@ main h1 {
     line-height: 1.2 !important;
 }
 
-/* Preview Render Styles - Matching Editor Colors */
+/* Preview Render Styles - Rich WeChat Style */
+#preview-render {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #333;
+    line-height: 1.75;
+}
+
 #preview-render h1 {
-    font-size: 1.125rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    color: #0025F5;
-    border-bottom: 3px solid #0025F5;
-    padding-bottom: 0.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Classic WeChat H2 Styling */
+#preview-render h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 2rem;
     margin-bottom: 1rem;
-    margin-top: 0;
-    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#preview-render h2::before,
+#preview-render h2::after {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: #07c160;
+    margin: 0 10px;
+    border-radius: 2px;
+
 }
 
 #preview-render blockquote {
-    background-color: #F3F4F6;
-    padding: 0.5rem;
-    border-left: 4px solid #9CA3AF;
-    margin-bottom: 1rem;
-    font-size: 0.75rem;
-    color: #6B7280;
-    font-style: italic;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-#preview-render blockquote p {
-    margin: 0;
+    background-color: #F7F7F7;
+    padding: 1rem;
+    border-left: 4px solid #07c160;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
 }
 
 #preview-render p {
-    font-size: 0.75rem;
-    color: #1F2937;
-    line-height: 1.625;
-    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
     text-align: justify;
-}
-
-#preview-render h2 {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #1F2937;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    margin-top: 0;
-}
-
-#preview-render h2::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 16px;
-    background-color: #0025F5;
-}
-
-#preview-render h3 {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #4B5563;
-    margin-bottom: 0.5rem;
-    margin-top: 0.75rem;
+    letter-spacing: 0.05em;
 }
 
 #preview-render ul {
-    font-size: 0.75rem;
-    color: #4B5563;
-    padding-left: 4px;
+    font-size: 1rem;
+    color: #333;
+    padding-left: 0;
     list-style: none;
-    margin: 0;
+    margin-bottom: 1.2rem;
 }
 
 #preview-render li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
 }
 
 #preview-render li::before {
-    content: '•';
-    font-weight: bold;
-    color: #6B7280;
-    margin-right: 0.5rem;
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #07c160;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
 }
 
 #preview-render strong {
     font-weight: 700;
-    margin-left: 0.25rem;
+    color: #07c160;
+    margin: 0 2px;
 }
 
 /* Code inline */
 #preview-render code {
-    color: #FF6B9D;
-    background-color: #F9FAFB;
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-    font-size: 0.7rem;
+    color: #07c160;
+    background-color: rgba(7, 193, 96, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9rem;
     font-family: 'JetBrains Mono', monospace;
+    margin: 0 2px;
 }
 
-/* Italic */
-#preview-render em {
-    color: #7C3AED;
-    font-style: italic;
+/* Code block */
+#preview-render pre {
+    background-color: #F7F7F7;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    overflow-x: auto;
+    border: 1px solid #E5E7EB;
+}
+
+#preview-render pre code {
+    color: inherit;
+    /* Reset inline color */
+    background-color: transparent;
+    /* Reset inline bg */
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
 }
 
 /* Links */
 #preview-render a {
-    color: #0025F5;
-    text-decoration: underline;
+    color: #576b95;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(87, 107, 149, 0.3);
 }
 
 /* Animations */
