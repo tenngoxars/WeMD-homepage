@@ -47,7 +47,7 @@ function hslToRgb(h, s, l): [r, g, b]
 
 ### 2. 元素类型识别
 
-算法通过 CSS 选择器识别 12 种元素类型：
+算法通过 CSS 选择器识别 14 种元素类型：
 
 ```typescript
 type ElementType = 
@@ -60,6 +60,8 @@ type ElementType =
   | 'blockquote-text'   // 引用块文字
   | 'code'              // 代码块背景
   | 'code-text'         // 代码块文字
+  | 'selection'         // 选中区域背景
+  | 'selection-text'    // 选中区域文字
   | 'decorative-dark'   // 深色装饰（阴影/边框）
   | 'vibrant-protected' // 鲜艳色保护
   | 'other'             // 其他
@@ -88,6 +90,7 @@ function getElementType(selector: string): ElementType {
 | table | 10% - 24% | 0.6 |
 | blockquote | 14% - 22% | 0.7 |
 | code | 10% - 20% | 0.5 |
+| selection | 45% - 65% | 0.6 |
 | decorative-dark | 10% - 15% | 0 |
 | vibrant-protected | 35% - 55% | 1.0 |
 
@@ -194,6 +197,7 @@ interface DarkModeConfig {
 |------|------|
 | CSS 变量 | `var(--xxx)` 不会被处理 |
 | 颜色名称 | `black`、`white` 不会被转换 |
+| 渐变 | `linear-gradient` 等渐变不会被处理（微信不支持） |
 | 图片 | 图片本身不会被处理（与微信一致） |
 
 ---
@@ -212,9 +216,11 @@ interface DarkModeConfig {
 ### Q: 预览效果和微信实际效果有差异怎么办？
 
 算法还原度约 90%，以下场景可能有差异：
-- 渐变色的边缘过渡
 - 半透明颜色的叠加效果
 - 极端亮度值（接近纯黑或纯白）
+
+> [!NOTE]
+> 渐变（`gradient`）会被直接跳过不做转换，因为微信公众号不支持 CSS 渐变。
 
 如果发现明显差异，欢迎提交 Issue，我会持续优化算法。
 
