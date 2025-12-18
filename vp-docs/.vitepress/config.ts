@@ -17,7 +17,7 @@ export default defineConfig({
     ],
 
     themeConfig: {
-        logo: 'logo.svg',
+        logo: { light: '/logo-dark.svg', dark: '/logo-light.svg' },
 
         nav: [
             { text: '首页', link: 'https://wemd.app' },
