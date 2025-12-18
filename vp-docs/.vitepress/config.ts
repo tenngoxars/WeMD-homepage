@@ -10,14 +10,14 @@ export default defineConfig({
     },
 
     head: [
-        ['link', { rel: 'icon', href: 'favicon.svg' }],
+        ['link', { rel: 'icon', href: '/docs/favicon.svg' }],
         ['meta', { name: 'theme-color', content: '#07c160' }],
         ['meta', { property: 'og:type', content: 'website' }],
         ['meta', { property: 'og:site_name', content: 'WeMD' }],
     ],
 
     themeConfig: {
-        logo: { light: '/logo-dark.svg', dark: '/logo-light.svg' },
+        logo: { light: '/docs/logo-dark.svg', dark: '/docs/logo-light.svg' },
 
         nav: [
             { text: '首页', link: 'https://wemd.app' },
