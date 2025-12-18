@@ -234,3 +234,14 @@
 .VPDocAsideOutline .outline-link.active {
     border-left-color: var(--vp-c-brand-1) !important;
 }
+
+/* ========================================
+   11. 修复左上角 Logo 区域背景不统一 (Curtain)
+   ======================================== */
+.curtain {
+    background: transparent !important;
+}
+
+.dark .curtain {
+    background: transparent !important;
+}
