@@ -10,7 +10,7 @@
         "docs:dev": "vitepress dev vp-docs",
         "docs:build": "vitepress build vp-docs",
         "docs:preview": "vitepress preview vp-docs",
-        "build": "vite build && vitepress build vp-docs && mkdir -p dist/docs && cp -r vp-docs/.vitepress/dist/* dist/docs/"
+        "build": "vite build && vitepress build vp-docs && mkdir -p dist/docs && cp -r vp-docs/.vitepress/dist/* dist/docs/ && mv dist/docs/sitemap.xml dist/sitemap.xml"
     },
     "devDependencies": {
         "@tailwindcss/typography": "^0.5.19",

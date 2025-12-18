@@ -5,6 +5,9 @@ export default defineConfig({
     description: 'WeMD 是一款专为微信公众号设计的 Markdown 排版编辑器',
     lang: 'zh-CN',
     base: '/docs/',
+    sitemap: {
+        hostname: 'https://wemd.app'
+    },
 
     head: [
         ['link', { rel: 'icon', href: 'favicon.svg' }],
