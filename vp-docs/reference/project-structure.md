@@ -10,9 +10,10 @@ WeMD 采用 Monorepo 架构，使用 pnpm workspace + TurboRepo 管理。
 WeMD/
 ├── apps/                 # 应用程序
 │   ├── web/              # Web 版编辑器
-│   └── electron/         # 桌面版外壳
+│   ├── eletron/          # 桌面版外壳
+│   └── server/           # Logo 图片上传服务 (NestJS)
 ├── packages/             # 共享代码
-│   └── core/             # 核心库（Markdown 解析、主题）
+│   └── core/             # 核心库（Markdown 解析、主题、深色模式）
 ├── templates/            # 主题 CSS 模板
 ├── scripts/              # 构建脚本
 └── turbo.json            # TurboRepo 配置
@@ -80,6 +81,18 @@ apps/electron/
 
 ---
 
+### apps/server/（后端服务）
+
+基于 NestJS 的简单的服务端，主要用于处理特殊的图片上传需求。
+
+```
+apps/server/src/
+├── upload/           # 上传模块
+└── main.ts           # 入口文件
+```
+
+---
+
 ### packages/core/（核心库）
 
 与 UI 无关的核心逻辑。
@@ -88,6 +101,8 @@ apps/electron/
 packages/core/src/
 ├── MarkdownParser.ts     # Markdown 转 HTML
 ├── ThemeProcessor.ts     # 主题处理
+├── wechatDarkMode.ts     # 微信深色模式模拟算法
+├── plugins/              # Markdown 解析插件
 └── themes/               # 内置主题 CSS
     ├── basic.ts          # 基础样式
     ├── academic-paper.ts # 学术论文

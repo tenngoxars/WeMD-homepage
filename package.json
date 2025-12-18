@@ -5,15 +5,20 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        "preview": "vite preview"
+        "build:only-app": "vite build",
+        "preview": "vite preview",
+        "docs:dev": "vitepress dev vp-docs",
+        "docs:build": "vitepress build vp-docs",
+        "docs:preview": "vitepress preview vp-docs",
+        "build": "vite build && vitepress build vp-docs && mkdir -p dist/docs && cp -r vp-docs/.vitepress/dist/* dist/docs/"
     },
     "devDependencies": {
         "@tailwindcss/typography": "^0.5.19",
         "autoprefixer": "^10.4.16",
         "postcss": "^8.4.31",
         "tailwindcss": "^3.3.5",
-        "vite": "^5.0.0"
+        "vite": "^5.0.0",
+        "vitepress": "^1.6.4"
     },
     "dependencies": {
         "highlight.js": "^11.11.1",

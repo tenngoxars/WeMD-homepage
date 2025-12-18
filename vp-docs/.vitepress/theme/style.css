@@ -1,0 +1,236 @@
+/**
+ * WeMD 文档主题样式 (v3 - 现代极简版)
+ * 
+ * 核心设计：重排版、轻边框、去容器。
+ */
+
+/* ========================================
+   1. 品牌色 (WeChat Green 精细化)
+   ======================================== */
+:root {
+    --vp-c-brand-1: #07c160;
+    --vp-c-brand-2: #06ae56;
+    --vp-c-brand-3: #059b4c;
+    --vp-c-brand-soft: rgba(7, 193, 96, 0.08);
+    /* 更淡的背景 */
+
+    /* 界面细线 */
+    --vp-c-divider: rgba(0, 0, 0, 0.06);
+    --vp-c-border: rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+    --vp-c-brand-1: #3dd68c;
+    --vp-c-brand-2: #07c160;
+    --vp-c-brand-3: #06ae56;
+
+    --vp-c-divider: rgba(255, 255, 255, 0.08);
+    --vp-c-border: rgba(255, 255, 255, 0.12);
+}
+
+/* ========================================
+   2. 导航栏 (优化毛玻璃)
+   ======================================== */
+.VPNav {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(8px) !important;
+    /* 降低模糊度以提升性能 */
+    border-bottom: 1px solid var(--vp-c-divider) !important;
+}
+
+.dark .VPNav {
+    background-color: rgba(11, 15, 19, 0.7) !important;
+}
+
+/* ========================================
+   3. 侧边栏与布局 (移除背景)
+   ======================================== */
+.VPSidebar,
+.VPHome {
+    background: transparent !important;
+}
+
+/* 侧边栏项目优化 */
+.VPSidebarItem .link {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.VPSidebarItem .link:hover {
+    background-color: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand-1) !important;
+}
+
+.VPSidebarItem .link.active {
+    background-color: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand-1) !important;
+    font-weight: 600;
+}
+
+/* ========================================
+   4. 内容区 (去容器化)
+   ======================================== */
+.VPDoc .container {
+    background: transparent !important;
+    /* 彻底移除卡片背景 */
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 32px !important;
+    max-width: 860px !important;
+    /* 优化阅读宽度 */
+}
+
+/* 标题间距优化 */
+.vp-doc h1 {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.vp-doc h2 {
+    margin-top: 3rem;
+    border-top: 0;
+    padding-top: 0;
+    font-weight: 700;
+}
+
+/* 链接装饰 */
+.vp-doc a {
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s;
+}
+
+.vp-doc a:hover {
+    border-bottom-color: var(--vp-c-brand-1);
+}
+
+/* ========================================
+   5. 组件精细化 (代码块、引用、提示)
+   ======================================== */
+/* 代码块 */
+.vp-doc div[class*='language-'] {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* 引用块 */
+.vp-doc blockquote {
+    border-left: 4px solid var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
+    border-radius: 2px 12px 12px 2px;
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    color: var(--vp-c-text-2);
+}
+
+/* 自定义容器 (Tip, Warning) */
+.custom-block {
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    border: 1px solid transparent;
+}
+
+.custom-block.tip {
+    background-color: rgba(7, 193, 96, 0.05);
+    border-color: rgba(7, 193, 96, 0.1);
+}
+
+/* ========================================
+   6. 导航栏布局修复 (Logo & Search)
+   ======================================== */
+/* 1. 强制提升 Logo 层级 */
+.VPNavBarTitle {
+    position: relative !important;
+    z-index: 100 !important;
+}
+
+/* 2. 调整搜索框位置 */
+/* 确保内容区域是 Flex 容器，且整体靠右对齐 */
+.VPNavBar .content-body {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100%;
+}
+
+/* 搜索框恢复自然顺序（在菜单左侧），但增加右侧间距 */
+.VPNavBarSearch {
+    order: initial !important;
+    margin-right: 16px !important;
+    margin-left: 0 !important;
+}
+
+/* 移动端适配 */
+@media (max-width: 960px) {
+    .VPNavBar .content-body {
+        width: auto !important;
+    }
+
+    .VPNavBarSearch {
+        margin-right: 0 !important;
+    }
+}
+
+/* ========================================
+   7. 首页提示块优化
+   ======================================== */
+.tip.custom-block {
+    display: flex;
+    align-items: center;
+    /* 垂直居中 */
+    justify-content: center;
+    /* 水平居中 */
+
+    width: fit-content;
+    /* 自适应宽度，解决"太宽" */
+    min-height: 64px;
+    /* 保证足够的高度 */
+    margin: 16px 0;
+    /* 上下边距，左对齐 (如果需要居中改成 16px auto) */
+    padding: 0 48px;
+    /* 左右留白 */
+
+    text-align: center;
+}
+
+.tip.custom-block p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ========================================
+   8. 滚动条美化
+   ======================================== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   10. 右侧大纲 (Outline)
+   ======================================== */
+.VPDocAsideOutline .outline-link:hover,
+.VPDocAsideOutline .outline-link.active {
+    color: var(--vp-c-brand-1) !important;
+}
+
+.VPDocAsideOutline .outline-link.active {
+    border-left-color: var(--vp-c-brand-1) !important;
+}

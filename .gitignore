@@ -16,3 +16,7 @@ dist/
 .env
 .env.local
 .env.*.local
+
+# AI Agent files
+.agentdocs/
+.gemini/
