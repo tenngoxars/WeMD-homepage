@@ -249,6 +249,36 @@ WeMD 内置深色模式预览算法，你的主题 CSS **无需单独编写深�
 
 ---
 
+### 13. 提示块（GitHub Alert）
+
+提示块使用 GitHub 风格的 Alert 语法：`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`
+
+```css
+/* 基础样式 */
+#wemd .callout {
+    margin: 20px 0;
+    padding: 16px 20px;
+    background: #f5f5f5;
+    border-left: 4px solid #ddd;
+    border-radius: 4px;
+}
+
+#wemd .callout-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+/* 不同类型 */
+#wemd .callout-note { border-left-color: #6366f1; background: #f5f5ff; }
+#wemd .callout-tip { border-left-color: #10b981; background: #ecfdf5; }
+#wemd .callout-important { border-left-color: #8b5cf6; background: #f5f3ff; }
+#wemd .callout-warning { border-left-color: #f59e0b; background: #fffbeb; }
+#wemd .callout-caution { border-left-color: #ef4444; background: #fff5f5; }
+```
+
+---
+
 ## 如何使用
 
 1. 点击 **「主题管理」** → **「新建自定义主题」**

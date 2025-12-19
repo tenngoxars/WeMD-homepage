@@ -46,7 +46,7 @@ WeMD 内置了一套**色彩语义保全算法**，可在编辑器中预览微�
 
 ## 核心原理
 
-### 1. HSL 色彩空间转换
+### HSL 色彩空间转换
 
 算法使用 HSL（色相-饱和度-亮度）色彩空间进行计算：
 
@@ -60,7 +60,7 @@ function hslToRgb(h, s, l): [r, g, b]
 - 饱和度（S）可独立调整：控制颜色鲜艳程度
 - 亮度（L）精确映射：这是深色模式的核心
 
-### 2. 元素类型识别
+### 元素类型识别
 
 算法通过 CSS 选择器识别 14 种元素类型：
 
@@ -94,7 +94,7 @@ function getElementType(selector: string): ElementType {
 }
 ```
 
-### 3. 亮度区间映射
+### 亮度区间映射
 
 不同元素类型映射到不同的深色亮度区间：
 
@@ -114,7 +114,7 @@ function getElementType(selector: string): ElementType {
 newL = maxL - (originalL / 100) * (maxL - minL)
 ```
 
-### 4. 对比度保全
+### 对比度保全
 
 文字颜色需要与背景保持足够对比度：
 
@@ -127,29 +127,38 @@ function adjustTextBrightness(textRgb, textHsl, bgRgb) {
 }
 ```
 
-### 6. 背景图补色 (Background Layering)
+### 背景图层完美对齐 (Background Layering)
 
-针对带有 `background-image` 的元素，WeMD 会自动在图片底层追加一层转换后的深色背景：
+针对带有 `background-image` 的元素，WeMD 会自动在图片底层追加一层转换后的深色背景，并同步复制定位与尺寸属性：
 
 ```css
 /* 输入 */
-.card { background-image: url(logo.png); background-color: #fff; }
+.card { 
+    background-image: url(logo.png); 
+    background-color: #fff;
+    background-size: cover;
+    background-position: center;
+}
 
 /* 输出 */
 .card { 
     background-color: #191919; 
     background-image: url(logo.png), linear-gradient(#191919, #191919); 
+    background-size: cover, 100%;
+    background-position: center, top left;
 }
 ```
 
-**目的**：防止透明图片在深色模式下因为透出底部的白色而显得突兀。
+**目的**：确保在图片加载前、透明背景或具有特殊定位/拉伸的图片场景下，底部的补色层始终能与图片区域完美对齐映射。
 
-### 7. 属性优先级校准 (Property Sorting)
+### 属性精度对齐与排序 (Property Sorting)
 
-为了确保复杂选择器下的渲染顺序与微信官方 SDK 一致，算法会将输出的属性进行排序：
-- `-webkit-text-*` 相关属性优先处理。
-- `color` 属性置后。
-- `background-image` 置于 `background-color` 之后。
+为了确保复杂选择器下的渲染顺序与微信官方 SDK 一致，算法实现了全量属性矩阵支持与严格排序：
+- **全属性支持**：除基础色值外，还支持 `box-shadow`、`outline`、`column-rule` (分栏线)、`-webkit-text-stroke` 等 20+ 种属性的精准转换。
+- **严格排序**：
+  - `-webkit-text-*` 相关属性最优先执行，确保文本特殊样式不被覆盖。
+  - `background-image` 紧随 `background-color` 之后，保证叠加层级正确。
+  - `color` 属性由于优先级最高，被置于声明块最后输出。
 
 ---
 
