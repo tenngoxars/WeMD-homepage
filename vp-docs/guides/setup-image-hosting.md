@@ -90,6 +90,21 @@
 | Domain | 绑定的加速域名或默认域名 |
 | Region | 区域：`ap-guangzhou`, `ap-shanghai`, `ap-beijing` 等 |
 
+### S3 兼容存储
+
+适用于 AWS S3、Cloudflare R2、MinIO、DigitalOcean Spaces 等支持 S3 协议的存储服务。
+
+| 字段 | 填写内容 |
+| :--- | :--- |
+| 服务商 | 选择「S3 兼容存储」 |
+| **Endpoint** | S3 API 接口地址（如 `https://s3.amazonaws.com` 或 `https://play.min.io`） |
+| **Region** | 区域代码（如 `us-east-1`，MinIO 可填 `us-east-1` 或留空） |
+| **AccessKey** | Access Key ID |
+| **SecretKey** | Secret Access Key |
+| **Bucket** | 存储桶名称 |
+| Path Style | 是否强制使用路径风格访问（MinIO 通常需要开启） |
+| Custom Domain | (可选) 自定义 CDN 域名，不填则使用 Endpoint 拼接 |
+
 ---
 
 ## 步骤 4：验证并保存

@@ -249,7 +249,7 @@ WeMD 内置深色模式预览算法，你的主题 CSS **无需单独编写深�
 
 ---
 
-### 13. 提示块（GitHub Alert）
+### 13. 提示块
 
 提示块使用 GitHub 风格的 Alert 语法：`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`
 
@@ -275,6 +275,52 @@ WeMD 内置深色模式预览算法，你的主题 CSS **无需单独编写深�
 #wemd .callout-important { border-left-color: #8b5cf6; background: #f5f3ff; }
 #wemd .callout-warning { border-left-color: #f59e0b; background: #fffbeb; }
 #wemd .callout-caution { border-left-color: #ef4444; background: #fff5f5; }
+```
+
+---
+
+### 14. 多图片滑动展示
+
+多图片滑动展示是 WeMD 的多图轮播语法（`<![alt](src), ![alt](src)>`），需要配合以下 CSS 才能生效：
+
+```css
+/* 容器：横向滚动 */
+#wemd .imageflow-layer1 {
+    margin: 20px 0;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#wemd .imageflow-layer2 {
+    display: inline-flex;
+    gap: 10px; /* 图片间距 */
+}
+
+/* 单个图片容器 */
+#wemd .imageflow-layer3 {
+    display: inline-block;
+    vertical-align: top;
+    width: 80%; /* 图片默认显示宽度 */
+    flex-shrink: 0;
+}
+
+/* 图片本体 */
+#wemd .imageflow-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* 图片说明 */
+#wemd .imageflow-caption {
+    text-align: center;
+    color: #888;
+    margin-top: 4px;
+    font-size: 14px;
+}
 ```
 
 ---
