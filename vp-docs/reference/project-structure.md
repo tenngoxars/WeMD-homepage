@@ -10,7 +10,7 @@ WeMD 采用 Monorepo 架构，使用 pnpm workspace + TurboRepo 管理。
 WeMD/
 ├── apps/                 # 应用程序
 │   ├── web/              # Web 版编辑器
-│   ├── eletron/          # 桌面版外壳
+│   ├── electron/          # 桌面版外壳
 │   └── server/           # Logo 图片上传服务 (NestJS)
 ├── packages/             # 共享代码
 │   └── core/             # 核心库（Markdown 解析、主题、深色模式）
@@ -74,8 +74,10 @@ Electron 外壳，包装 Web 版为桌面应用。
 
 ```
 apps/electron/
-├── main.js           # 主进程（窗口管理、菜单、IPC）
-├── preload.js        # 预加载脚本（暴露 API 给渲染进程）
+├── src/
+│   ├── main.ts       # 主进程（窗口管理、菜单、IPC）
+│   └── preload.ts    # 预加载脚本（暴露 API 给渲染进程）
+├── tsconfig.json     # TypeScript 配置
 └── package.json      # Electron 依赖配置
 ```
 
