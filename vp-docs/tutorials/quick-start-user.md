@@ -62,6 +62,21 @@ Web 版提供两种存储模式，点击顶部导航栏的 **「存储模式」*
 2. 首次打开会看到欢迎页面，点击 **「选择工作区文件夹」** 按钮。
 3. 在系统文件选择器中选择文件夹，无需额外授权。
 
+### 🐳 Docker 部署
+
+如需在自己的服务器上部署 WeMD：
+
+```bash
+# 克隆项目
+git clone https://github.com/tenngoxars/WeMD.git
+cd WeMD
+
+# 一键启动
+docker-compose up -d
+```
+
+访问 `http://你的服务器IP:8080` 即可使用。
+
 ---
 
 ## 步骤 2：创建文档
