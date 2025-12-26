@@ -24,6 +24,7 @@
         "highlight.js": "^11.11.1",
         "lucide": "^0.292.0",
         "marked": "^17.0.1",
-        "marked-highlight": "^2.2.3"
+        "marked-highlight": "^2.2.3",
+        "three": "^0.182.0"
     }
 }

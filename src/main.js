@@ -1,5 +1,5 @@
 import './style.css';
-import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, UploadCloud, Laptop, Code2, ArrowRight, Menu, X } from 'lucide';
+import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, UploadCloud, Laptop, Code2, ArrowRight, Menu, X, Moon, Image, Star } from 'lucide';
 import { marked } from 'marked';
 import { markedHighlight } from "marked-highlight";
 import hljs from 'highlight.js';
@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
             Code2,
             ArrowRight,
             Menu,
-            X
+            X,
+            Moon,
+            Image,
+            Star
         }
     });
 
@@ -35,7 +38,163 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Live Editor Logic
     initEditor();
+
+    // Visual Enhancements
+    initSpotlight();
+    initHeroTilt();
+
+    initScrollReveal();
+
+    // Misc
+    initMiscFeatures();
 });
+
+function initMiscFeatures() {
+    // 1. GitHub Stars (with Caching)
+    const container = document.getElementById('github-star-container');
+    const countEl = document.getElementById('github-star-count');
+    const CACHE_KEY = 'wemd_stars_cache';
+    const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+
+    const renderStars = (count) => {
+        if (!count || !container || !countEl) return;
+        const formatted = count >= 1000 ? (count / 1000).toFixed(1) + 'k' : count;
+        countEl.textContent = formatted;
+        container.classList.remove('hidden');
+        createIcons({ icons: { Star }, attrs: { class: "w-3.5 h-3.5 text-yellow-400 fill-yellow-400" }, nameAttr: 'data-lucide' });
+    };
+
+    if (container && countEl) {
+        const cached = localStorage.getItem(CACHE_KEY);
+        let validCacheFound = false;
+
+        if (cached) {
+            try {
+                const { count, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp < CACHE_DURATION) {
+                    renderStars(count);
+                    validCacheFound = true;
+                }
+            } catch (e) { localStorage.removeItem(CACHE_KEY); }
+        }
+
+        if (!validCacheFound) {
+            fetch('https://api.github.com/repos/tenngoxars/WeMD')
+                .then(res => {
+                    if (!res.ok) throw new Error(res.statusText);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.stargazers_count) {
+                        const count = data.stargazers_count;
+                        renderStars(count);
+                        localStorage.setItem(CACHE_KEY, JSON.stringify({
+                            count: count,
+                            timestamp: Date.now()
+                        }));
+                    }
+                })
+                .catch(e => {
+                    console.warn('Stars fetch failed:', e);
+                    if (cached && !validCacheFound) {
+                        try {
+                            const { count } = JSON.parse(cached);
+                            renderStars(count);
+                        } catch (_) { }
+                    }
+                });
+        }
+    }
+
+    // 2. Logo Interaction (Spin on scroll top)
+    const logo = document.getElementById('nav-logo');
+    let lastScrollY = window.scrollY;
+
+    if (logo) {
+        window.addEventListener('scroll', () => {
+            const currentY = window.scrollY;
+            if (currentY < 10 && lastScrollY > 20) {
+                logo.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    logo.style.transition = 'none';
+                    logo.style.transform = 'rotate(0deg)';
+                    logo.offsetHeight; // Force reflow
+                    logo.style.transition = 'transform 0.7s ease-in-out';
+                }, 700);
+            }
+            lastScrollY = currentY;
+        });
+
+        logo.addEventListener('mouseenter', () => {
+            logo.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        logo.addEventListener('mouseleave', () => {
+            logo.style.transform = 'scale(1) rotate(0deg)';
+        });
+    }
+}
+
+
+// Spotlight Effect
+function initSpotlight() {
+    const cards = document.querySelectorAll('.glass-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+}
+
+// Hero 3D Tilt
+function initHeroTilt() {
+    const heroSection = document.querySelector('.perspective-container');
+    const heroWindow = document.getElementById('hero-window');
+
+    if (!heroSection || !heroWindow) return;
+
+    heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Calculate percentage from center (-1 to 1)
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -2; // Max +/- 2deg
+        const rotateY = ((x - centerX) / centerX) * 2;
+
+        heroWindow.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+        heroWindow.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    });
+}
+
+// Scroll Reveal
+function initScrollReveal() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Stagger effect based on index/order
+                setTimeout(() => {
+                    entry.target.classList.add('reveal-visible');
+                }, index * 100); // 100ms delay per item
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '50px'
+    });
+
+    document.querySelectorAll('.glass-card').forEach(el => observer.observe(el));
+}
 
 // Mobile Menu Toggle
 function initMobileMenu() {
@@ -91,7 +250,7 @@ function initEditor() {
 
     if (!textarea || !highlight || !preview) return;
 
-    const defaultContent = `# WeMD
+    const targetContent = `# WeMD
 
 > 秩序产生美。
 
@@ -109,8 +268,43 @@ console.log("Hello, WeMD!");
 
 *现在就开始创作吧！*`;
 
+    // Typewriter Logic
+    const typeWriter = async () => {
+        textarea.value = ''; // Start empty
+        textarea.setAttribute('readonly', 'readonly'); // Block user input during demo
+
+        // Initial pause
+        await new Promise(r => setTimeout(r, 800));
+
+        let i = 0;
+        const speed = 60; // ms per char
+
+        const typeChar = () => {
+            if (i < targetContent.length) {
+                textarea.value += targetContent.charAt(i);
+                render(); // Update visual
+                syncScroll();
+                i++;
+
+                // Randomize speed slightly for realism
+                const randomDelay = speed + (Math.random() * 20 - 10);
+                setTimeout(typeChar, randomDelay);
+            } else {
+                // Done
+                textarea.removeAttribute('readonly');
+                // Mobile check again
+                if (window.innerWidth < 768) {
+                    textarea.setAttribute('readonly', 'readonly');
+                }
+            }
+        };
+
+        typeChar();
+    };
+
+    // Start auto-typing if fresh visit (simple heuristic: empty value)
     if (!textarea.value) {
-        textarea.value = defaultContent;
+        typeWriter();
     }
 
     // Disable editing on mobile devices
@@ -125,7 +319,6 @@ console.log("Hello, WeMD!");
 
     // Strong (Bold) with semantic coloring
     renderer.strong = (token) => {
-        // ... (strong renderer code)
         const text = (typeof token === 'object' && token) ? (token.text || token.content || '') : token;
         const content = String(text || '');
 

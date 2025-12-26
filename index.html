@@ -42,7 +42,7 @@
         rel="stylesheet">
 
     <!-- Main Script -->
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/main.js?v=starCache"></script>
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -96,7 +96,8 @@
             style="opacity: 0;">
             <!-- Logo -->
             <div class="flex items-center gap-2.5">
-                <img src="/logo.svg" alt="WeMD Logo" class="w-8 h-8" />
+                <img id="nav-logo" src="/logo.svg" alt="WeMD Logo"
+                    class="w-8 h-8 transition-transform duration-700 ease-in-out" />
                 <span class="font-bold text-lg tracking-tight text-gray-900">WeMD</span>
             </div>
 
@@ -105,7 +106,17 @@
                 <a href="/docs/"
                     class="px-5 py-2 text-sm font-medium text-gray-500 rounded-full hover:text-wemd-green hover:bg-green-50/50 transition-all duration-300">帮助文档</a>
                 <a href="https://github.com/tenngoxars/WeMD" target="_blank"
-                    class="px-5 py-2 text-sm font-medium text-gray-500 rounded-full hover:text-wemd-green hover:bg-green-50/50 transition-all duration-300">GitHub</a>
+                    class="px-5 py-2 text-sm font-medium text-gray-500 rounded-full hover:text-wemd-green hover:bg-green-50/50 transition-all duration-300 flex items-center gap-2 group">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    <span>GitHub</span>
+                    <!-- Star Counter -->
+                    <div id="github-star-container"
+                        class="hidden flex items-center gap-1.5 ml-1 pl-3 border-l border-gray-200 group-hover:border-green-200 transition-colors">
+                        <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-yellow-400"></i>
+                        <span id="github-star-count"
+                            class="text-xs font-mono font-medium text-gray-600 group-hover:text-wemd-green transition-colors"></span>
+                    </div>
+                </a>
                 <a href="https://github.com/tenngoxars/WeMD/releases" target="_blank"
                     class="btn-primary relative overflow-hidden group px-6 py-2 text-sm min-w-0 shadow-green-500/30 hover:shadow-green-500/40">
                     <span class="relative z-10">下载客户端</span>
@@ -182,39 +193,40 @@
 
             <p
                 class="text-lg md:text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-10 animate-fade-in-up [animation-delay:400ms] opacity-0">
-                WeMD 是一款专为公众号创作者打造的 Markdown 编辑器。
-                <br class="hidden md:block">
-                原生渲染，完美还原，让写作重新成为一种享受。
+                支持 <strong class="font-semibold text-gray-700">数学公式</strong>、<strong
+                    class="font-semibold text-gray-700">多图床集成</strong>、<strong
+                    class="font-semibold text-gray-700">微信深色模式预览</strong>。<br class="hidden md:block">
+                专为创作者打造的本地优先编辑器。
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 w-full justify-center reveal-on-scroll"
                 style="transition-delay: 200ms;">
-                <a href="https://edit.wemd.app" target="_blank"
-                    class="btn-primary min-w-[160px] flex items-center justify-center gap-2 relative overflow-hidden group">
-                    <span class="relative z-10 flex items-center gap-2">在线编辑 <i data-lucide="arrow-right"
-                            class="w-4 h-4"></i></span>
+                <a href="https://github.com/tenngoxars/WeMD/releases" target="_blank"
+                    class="btn-primary min-w-[180px] flex items-center justify-center gap-2 relative overflow-hidden group">
+                    <i data-lucide="laptop" class="w-4 h-4"></i>
+                    <span class="relative z-10 font-bold">下载客户端</span>
                     <div
                         class="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0">
                     </div>
                 </a>
-                <a href="https://github.com/tenngoxars/WeMD" target="_blank"
+                <a href="https://edit.wemd.app" target="_blank"
                     class="btn-secondary min-w-[160px] flex items-center justify-center gap-2">
-                    <i data-lucide="github" class="w-5 h-5"></i>
-                    GitHub
+                    <span class="relative z-10 flex items-center gap-2">在线使用 <i data-lucide="arrow-right"
+                            class="w-4 h-4"></i></span>
                 </a>
             </div>
         </div>
 
         <!-- Floating Editor Preview (Hero Image) -->
-        <div class="relative w-full max-w-5xl mx-auto group">
+        <div class="relative w-full max-w-5xl mx-auto group perspective-container">
             <!-- Glow behind -->
             <div
                 class="absolute -inset-1 bg-gradient-to-r from-green-300 to-blue-300 rounded-[2rem] opacity-30 blur-2xl group-hover:opacity-50 transition-opacity duration-500">
             </div>
 
             <!-- Window Container -->
-            <div
-                class="relative bg-white/90 backdrop-blur-2xl rounded-[1.5rem] shadow-premium border border-white/60 overflow-hidden flex flex-col h-[600px] md:h-[700px] transition-transform duration-500 hover:scale-[1.01]">
+            <div id="hero-window"
+                class="relative bg-white/90 backdrop-blur-2xl rounded-[1.5rem] shadow-premium border border-white/60 overflow-hidden flex flex-col h-[600px] md:h-[700px] transition-transform duration-100 will-change-transform">
 
                 <!-- Mac-style Header -->
                 <div
@@ -229,8 +241,8 @@
                 </div>
 
                 <!-- Editor Body -->
-                <div class="flex-1 flex overflow-hidden">
-                    <!-- Left: Editor -->
+                <div class="flex-1 flex overflow-hidden relative z-10">
+                    <!-- Left: Editor (Base Layer) -->
                     <div class="flex-1 bg-gray-50/50 p-8 relative overflow-hidden border-r border-gray-100/50">
                         <pre id="editor-highlight" aria-hidden="true"
                             class="absolute inset-0 pointer-events-none p-8 w-full h-full whitespace-pre-wrap break-all text-gray-800 font-mono text-sm leading-7"></pre>
@@ -239,8 +251,9 @@
                             spellcheck="false"></textarea>
                     </div>
 
-                    <!-- Right: Preview -->
-                    <div class="flex-1 bg-white p-8 overflow-auto hidden md:block">
+                    <!-- Right: Preview (Floating High) -->
+                    <div
+                        class="flex-1 bg-white p-8 overflow-auto hidden md:block shadow-[-20px_0_40px_rgba(0,0,0,0.03)]">
                         <div id="preview-render" class="prose prose-sm max-w-none">
                             <!-- Content injected via JS -->
                         </div>
@@ -253,45 +266,86 @@
 
     <!-- Features Section -->
     <section class="max-w-6xl mx-auto px-6 py-24">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Feature 1 -->
-            <div class="glass-card p-8 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300"
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900">
+            好看，<span class="text-wemd-green">更要好用</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feature 1: Markdown & Math -->
+            <div class="glass-card p-8 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                 style="opacity: 0;">
                 <div
-                    class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                    <i data-lucide="palette" class="w-6 h-6"></i>
+                    class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300">
+                    <i data-lucide="code-2" class="w-6 h-6"></i>
                 </div>
-                <h3 class="font-bold text-xl mb-3 text-gray-900">CSS 主题引擎
-                </h3>
+                <h3 class="font-bold text-xl mb-3 text-gray-900">公式 & 代码</h3>
                 <p class="text-sm text-gray-500 leading-relaxed">
-                    内置多款精选主题，支持 CSS 深度定制。让每一篇文章都独一无二。
+                    完美支持 GFM 标准 Markdown。内置 Katex 数学公式渲染与 Highlight.js 代码高亮，技术写作无障碍。
                 </p>
             </div>
 
-            <!-- Feature 2 -->
-            <!-- Feature 2 -->
-            <div class="glass-card p-8 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300"
+            <!-- Feature 2: Dark Mode -->
+            <div class="glass-card p-8 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                 style="opacity: 0;">
                 <div
-                    class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                    class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300">
+                    <i data-lucide="moon" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3 text-gray-900">微信深色模式预览</h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    内置模拟引擎，精准预览文章在微信深色模式下的显示效果。在发布前消除视觉隐患，让阅读体验始终如一。
+                </p>
+            </div>
+
+            <!-- Feature 3: Image Hosting -->
+            <div class="glass-card p-8 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+                style="opacity: 0;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300">
+                    <i data-lucide="cloud-upload" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3 text-gray-900">多图床集成</h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    支持七牛云、阿里云、腾讯云、S3 等主流对象存储。拖拽图片即刻上传，支持自定义 CDN 域名。
+                </p>
+            </div>
+
+            <!-- Feature 4: Theme Engine -->
+            <div class="glass-card p-8 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+                style="opacity: 0;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300">
+                    <i data-lucide="palette" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3 text-gray-900">CSS 主题引擎</h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    内置多款精选主题，更支持 CSS 深度定制。让每一篇文章都拥有独特的视觉风格。
+                </p>
+            </div>
+
+            <!-- Feature 5: Local First -->
+            <div class="glass-card p-8 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+                style="opacity: 0;">
+                <div
+                    class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300">
                     <i data-lucide="hard-drive" class="w-6 h-6"></i>
                 </div>
                 <h3 class="font-bold text-xl mb-3 text-gray-900">本地优先</h3>
                 <p class="text-sm text-gray-500 leading-relaxed">
-                    所有数据存储在本地，无云端锁定。隐私安全有保障，离线也能用。
+                    无强制登录，所有文档数据存储在本地。支持本地文件夹管理，数据完全私有。
                 </p>
             </div>
 
-            <!-- Feature 3 -->
-            <div class="glass-card p-8 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300"
+            <!-- Feature 6: One Click Publish -->
+            <div class="glass-card p-8 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                 style="opacity: 0;">
                 <div
-                    class="w-12 h-12 rounded-xl bg-green-50 text-wemd-green flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-wemd-green group-hover:text-white transition-all duration-300">
+                    class="w-12 h-12 rounded-xl bg-green-50 text-wemd-green flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300">
                     <i data-lucide="copy" class="w-6 h-6"></i>
                 </div>
                 <h3 class="font-bold text-xl mb-3 text-gray-900">一键发布</h3>
                 <p class="text-sm text-gray-500 leading-relaxed">
-                    独家渲染算法，确保 100% 还原。复制粘贴直达公众号后台。
+                    针对微信公众号后台优化的渲染引擎。点击复制，直接粘贴，格式完美还原。
                 </p>
             </div>
         </div>

@@ -49,16 +49,45 @@
         animation: glass-reveal 0.4s ease-out 0.3s forwards;
     }
 
-    /* 2. Glass Card - Content panels */
+    /* 2. Glass Card - Content panels with Spotlight */
     .glass-card {
-        @apply bg-white/60 backdrop-blur-lg border border-white/60 rounded-2xl transition-all duration-300;
+        @apply bg-white/60 backdrop-blur-lg border border-white/60 rounded-2xl transition-all duration-300 relative overflow-hidden;
         /* GPU acceleration */
-        will-change: backdrop-filter;
+        will-change: backdrop-filter, transform;
         transform: translateZ(0);
         -webkit-backdrop-filter: blur(16px);
-        /* Entrance animation */
+        /* Scroll Reveal State */
         opacity: 0;
-        animation: glass-reveal 0.5s ease-out 0.4s forwards;
+        transform: translateY(20px);
+    }
+
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(7, 193, 96, 0.06), transparent 40%);
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    }
+
+    .glass-card:hover::before {
+        opacity: 1;
+    }
+
+    .glass-card:hover {
+        @apply bg-white/80 shadow-premium -translate-y-1 border-white;
+    }
+
+    /* Scroll Reveal Utilities */
+    .reveal-visible {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 0.9);
     }
 
     .glass-card:hover {
@@ -224,4 +253,39 @@ main h1 {
 /* Animations */
 .cursor-blink {
     @apply animate-blink;
+}
+
+.perspective-container {
+    perspective: 1000px;
+}
+
+/* Ambient Background Animation */
+.animate-blob {
+    animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+    animation-delay: 4s;
+}
+
+@keyframes blob {
+    0% {
+        transform: translate(0px, 0px) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+
+    100% {
+        transform: translate(0px, 0px) scale(1);
+    }
 }
