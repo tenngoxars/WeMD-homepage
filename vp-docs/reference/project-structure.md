@@ -34,7 +34,7 @@ apps/web/src/
 │   ├── Preview/      # 预览区
 │   ├── Header/       # 顶部导航
 │   ├── Sidebar/      # 文件侧边栏
-│   ├── Theme/        # 主题管理面板
+│   ├── Theme/        # 主题管理（含可视化设计器）
 │   ├── History/      # 历史记录与版本
 │   ├── Settings/     # 设置面板 (图床等)
 │   └── Welcome/      # 首次使用欢迎页
@@ -50,6 +50,10 @@ apps/web/src/
 │       └── FileSystemAdapter.ts  # 本地文件夹
 ├── hooks/            # 自定义 Hooks
 ├── services/         # 业务服务（图床上传）
+├── config/           # 静态配置（样式常量）
+├── lib/              # 核心工具库（平台适配）
+├── utils/            # 通用工具函数
+├── types/            # 全局类型定义
 └── styles/           # 全局样式
 ```
 
@@ -61,6 +65,7 @@ apps/web/src/
 | 搜索面板 | `components/Editor/SearchPanel.tsx` |
 | 预览区渲染 | `components/Preview/MarkdownPreview.tsx` |
 | 主题管理 | `components/Theme/ThemePanel.tsx` |
+| 可视化主题设计 | `components/Theme/ThemeDesigner/` |
 | 内置主题列表 | `store/themes/builtInThemes.ts` |
 | 图床上传 | `services/image/` |
 | 图床设置 | `components/Settings/ImageHostSettings.tsx` |
@@ -76,7 +81,8 @@ Electron 外壳，包装 Web 版为桌面应用。
 apps/electron/
 ├── src/
 │   ├── main.ts       # 主进程（窗口管理、菜单、IPC）
-│   └── preload.ts    # 预加载脚本（暴露 API 给渲染进程）
+│   ├── preload.ts    # 预加载脚本（暴露 API 给渲染进程）
+│   └── updater.ts    # 自动更新逻辑
 ├── tsconfig.json     # TypeScript 配置
 └── package.json      # Electron 依赖配置
 ```
