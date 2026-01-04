@@ -13,6 +13,10 @@
         "build": "vite build && vitepress build vp-docs && mkdir -p dist/docs && cp -r vp-docs/.vitepress/dist/* dist/docs/ && mv dist/docs/sitemap.xml dist/sitemap.xml"
     },
     "devDependencies": {
+        "@fontsource/inter": "^5.2.8",
+        "@fontsource/jetbrains-mono": "^5.2.8",
+        "@fontsource/noto-serif-sc": "^5.2.8",
+        "@fontsource/space-grotesk": "^5.2.10",
         "@tailwindcss/typography": "^0.5.19",
         "autoprefixer": "^10.4.16",
         "postcss": "^8.4.31",
