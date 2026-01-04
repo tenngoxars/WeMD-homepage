@@ -10,7 +10,7 @@ export default defineConfig({
     },
 
     head: [
-        ['link', { rel: 'icon', href: '/docs/favicon.svg' }],
+        ['link', { rel: 'icon', href: '/favicon.svg' }],
         ['meta', { name: 'theme-color', content: '#07c160' }],
         ['meta', { property: 'og:type', content: 'website' }],
         ['meta', { property: 'og:site_name', content: 'WeMD' }],
