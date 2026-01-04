@@ -1,5 +1,5 @@
 import './style.css';
-import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, UploadCloud, Laptop, Code2, ArrowRight, Menu, X, Moon, Image, Star } from 'lucide';
+import { createIcons, BookOpen, Github, Palette, HardDrive, Copy, CloudUpload, Laptop, Code2, ArrowRight, Menu, X, Moon, Image, Star } from 'lucide';
 import { marked } from 'marked';
 import { markedHighlight } from "marked-highlight";
 import hljs from 'highlight.js';
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Palette,
             HardDrive,
             Copy,
-            CloudUpload: UploadCloud,
+            CloudUpload,
             Laptop,
             Code2,
             ArrowRight,

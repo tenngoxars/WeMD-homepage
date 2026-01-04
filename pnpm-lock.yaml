@@ -12,8 +12,8 @@ importers:
         specifier: ^11.11.1
         version: 11.11.1
       lucide:
-        specifier: ^0.292.0
-        version: 0.292.0
+        specifier: ^0.562.0
+        version: 0.562.0
       marked:
         specifier: ^17.0.1
         version: 17.0.1
@@ -828,8 +828,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  lucide@0.292.0:
-    resolution: {integrity: sha512-30r4YbM6nfLiDNzS/YSFLNt/g98XIxBfFwtxF9yYJNpYyAq+iwQx8kM6MWxnh21WuQSkAbEQyru46y5IbCoUjw==}
+  lucide@0.562.0:
+    resolution: {integrity: sha512-k1Fb8ZMnRQovWRlea7Jr0b9UKA29IM7/cu79+mJrhVohvA2YC/Ti3Sk+G+h/SIu3IlrKT4RAbWMHUBBQd1O6XA==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -1898,7 +1898,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lucide@0.292.0: {}
+  lucide@0.562.0: {}
 
   magic-string@0.30.21:
     dependencies:
