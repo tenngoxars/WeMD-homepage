@@ -61,6 +61,7 @@ function initMiscFeatures() {
         const formatted = count >= 1000 ? (count / 1000).toFixed(1) + 'k' : count;
         countEl.textContent = formatted;
         container.classList.remove('hidden');
+        container.classList.add('flex');
         createIcons({ icons: { Star }, attrs: { class: "w-3.5 h-3.5 text-yellow-400 fill-yellow-400" }, nameAttr: 'data-lucide' });
     };
 
