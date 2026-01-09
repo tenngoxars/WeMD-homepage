@@ -14,6 +14,18 @@ export default defineConfig({
         ['meta', { name: 'theme-color', content: '#07c160' }],
         ['meta', { property: 'og:type', content: 'website' }],
         ['meta', { property: 'og:site_name', content: 'WeMD' }],
+        [
+            'script',
+            { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-ZX315WS5VE' }
+        ],
+        [
+            'script',
+            {},
+            `window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-ZX315WS5VE');`
+        ]
     ],
 
     themeConfig: {
