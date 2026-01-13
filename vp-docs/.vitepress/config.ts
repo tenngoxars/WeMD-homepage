@@ -49,7 +49,6 @@ export default defineConfig({
                 text: '操作指南',
                 items: [
                     { text: '配置图床', link: '/guides/setup-image-hosting' },
-                    { text: '图表绘制 (Mermaid)', link: '/guides/mermaid' },
                     { text: '新增自定义主题', link: '/guides/create-theme' }
                 ]
             },
@@ -57,6 +56,7 @@ export default defineConfig({
                 text: '技术参考',
                 items: [
                     { text: '快捷键列表', link: '/reference/hotkeys' },
+                    { text: 'Mermaid 图表', link: '/guides/mermaid' },
                     { text: '项目结构', link: '/reference/project-structure' },
                     { text: '深色模式算法', link: '/reference/dark-mode-algorithm' }
                 ]

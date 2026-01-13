@@ -15,18 +15,42 @@ WeMD 内置了对 Mermaid 图表的完整支持，你可以直接在编辑器中
 
 ## 支持的图表类型
 
-WeMD 支持 Mermaid 的绝大多数常用图表类型：
+WeMD 支持 Mermaid 的绝大多数常用图表类型。以下是一些常用示例：
 
-- [x] **流程图 (Flowchart)**
-- [x] **时序图 (Sequence)**
-- [x] **类图 (Class Diagram)**
-- [x] **状态图 (State Diagram)**
-- [x] **实体关系图 (ER Diagram)**
-- [x] **甘特图 (Gantt)**
-- [x] **饼图 (Pie Chart)**
-- [x] **思维导图 (Mindmap)**
-- [x] **用户旅程图 (User Journey)**
-- [x] **时间线 (Timeline)**
+### 流程图 (Flowchart)
+
+```mermaid
+graph TD;
+    A[开始] --> B{判断};
+    B -- 是 --> C[执行];
+    B -- 否 --> D[结束];
+    C --> D;
+```
+
+### 时序图 (Sequence)
+
+```mermaid
+sequenceDiagram
+    Alice->>John: Hello John, how are you?
+    John-->>Alice: Great!
+```
+
+### 其他支持类型
+
+- **类图 (Class Diagram)**
+- **状态图 (State Diagram)**
+- **实体关系图 (ER Diagram)**
+- **甘特图 (Gantt)**
+- **饼图 (Pie Chart)**
+- **思维导图 (Mindmap)**
+- **用户旅程图 (User Journey)**
+- **时间线 (Timeline)**
+
+::: tip 语法教程
+不熟悉 Mermaid 语法？请参考：
+- [Mermaid 官方文档](https://mermaid.js.org/intro/)
+- [Mermaid 在线练习](https://mermaid.live/)
+:::
 
 ## 主题适配
 
@@ -37,13 +61,6 @@ Mermaid 图表会自动读取当前编辑器的主题设置（如主色调、文
 - **节点边框与线条**：跟随主题主色（Primary Color）。
 - **文字颜色**：跟随主题的正文颜色。
 - **背景**：自动适配透明背景，确保在深色/浅色模式下都能完美显示。
-
-## 语法教程
-
-关于具体的 Mermaid 语法写法（如箭头怎么画、子图怎么写等），请参考：
-
-- [Mermaid 官方文档](https://mermaid.js.org/intro/)
-- [Mermaid 在线练习](https://mermaid.live/)
 
 ## 常见问题
 
