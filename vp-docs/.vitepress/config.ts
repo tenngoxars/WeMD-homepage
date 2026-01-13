@@ -49,6 +49,7 @@ export default defineConfig({
                 text: '操作指南',
                 items: [
                     { text: '配置图床', link: '/guides/setup-image-hosting' },
+                    { text: '图表绘制 (Mermaid)', link: '/guides/mermaid' },
                     { text: '新增自定义主题', link: '/guides/create-theme' }
                 ]
             },
