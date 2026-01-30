@@ -55,6 +55,7 @@ export default defineConfig({
             {
                 text: '技术参考',
                 items: [
+                    { text: 'Markdown 语法', link: '/reference/markdown-syntax' },
                     { text: '快捷键列表', link: '/reference/hotkeys' },
                     { text: 'Mermaid 图表', link: '/guides/mermaid' },
                     { text: '项目结构', link: '/reference/project-structure' },
