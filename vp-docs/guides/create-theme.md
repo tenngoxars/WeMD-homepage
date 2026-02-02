@@ -33,6 +33,84 @@ WeMD 提供两种创建自定义主题的方式：**可视化设计器**（推�
 
 以下内容针对手写 CSS 模式。
 
+### 获取起始模板
+
+如果你不想从零开始写 CSS，可以：
+
+1. 先用「可视化设计模式」创建一个主题
+2. 调整好大致的样式
+3. 导出生成的 CSS 代码
+4. 基于这份 CSS 继续手动微调
+
+可视化设计器生成的 CSS 会在开头声明一组 **CSS 变量**（以 `--wemd-` 开头），你可以直接修改这些变量的值来调整样式。
+
+#### 完整变量列表
+
+| 变量名 | 说明 |
+|--------|------|
+| **全局** | |
+| `--wemd-page-padding` | 页面两侧间距 |
+| `--wemd-font-size` | 正文字号 |
+| `--wemd-line-height` | 行高 |
+| `--wemd-paragraph-margin` | 段落间距 |
+| `--wemd-paragraph-padding` | 段落内边距 |
+| `--wemd-text-color` | 正文颜色 |
+| `--wemd-primary-color` | 主题色 |
+| `--wemd-primary-color-20` | 主题色衍生物 (透明度 12%) |
+| `--wemd-primary-color-30` | 主题色衍生物 (透明度 18%) |
+| `--wemd-primary-color-50` | 主题色衍生物 (透明度 50%) |
+| `--wemd-letter-spacing` | 全局字间距 |
+| `--wemd-underline-style` | 下划线样式 |
+| `--wemd-underline-color` | 下划线颜色 |
+| **标题** | |
+| `--wemd-h1-font-size` | H1 字号（h2/h3/h4 同理） |
+| `--wemd-h1-color` | H1 颜色 |
+| `--wemd-h1-margin-top` | H1 上边距 |
+| `--wemd-h1-margin-bottom` | H1 下边距 |
+| **代码** | |
+| `--wemd-code-background` | 代码块背景色 |
+| `--wemd-code-font-size` | 代码块字号 |
+| `--wemd-inline-code-color` | 行内代码颜色 |
+| `--wemd-inline-code-background` | 行内代码背景色 |
+| **引用** | |
+| `--wemd-quote-background` | 引用块背景色 |
+| `--wemd-quote-border-color` | 引用块边框颜色 |
+| `--wemd-quote-border-width` | 引用块边框宽度 |
+| `--wemd-quote-border-style` | 引用块边框样式 |
+| `--wemd-quote-text-color` | 引用块文字颜色 |
+| `--wemd-quote-font-size` | 引用块字号 |
+| `--wemd-quote-line-height` | 引用块行高 |
+| `--wemd-quote-padding-x` | 引用块水平内边距 |
+| `--wemd-quote-padding-y` | 引用块垂直内边距 |
+| **图片** | |
+| `--wemd-image-margin` | 图片间距 |
+| `--wemd-image-border-radius` | 图片圆角 |
+| `--wemd-image-caption-color` | 图注颜色 |
+| `--wemd-image-caption-font-size` | 图注字号 |
+| `--wemd-image-caption-align` | 图注对齐 |
+| **链接与文本** | |
+| `--wemd-link-color` | 链接颜色 |
+| `--wemd-italic-color` | 斜体颜色 |
+| `--wemd-del-color` | 删除线颜色 |
+| `--wemd-mark-background` | 高亮背景色 |
+| `--wemd-mark-color` | 高亮文字颜色 |
+| **表格** | |
+| `--wemd-table-header-background` | 表头背景色 |
+| `--wemd-table-header-color` | 表头文字颜色 |
+| `--wemd-table-border-color` | 表格边框颜色 |
+| **分割线** | |
+| `--wemd-hr-color` | 分割线颜色 |
+| `--wemd-hr-height` | 分割线高度 |
+| `--wemd-hr-margin` | 分割线上下间距 |
+| **列表** | |
+| `--wemd-list-spacing` | 列表项间距 |
+| `--wemd-list-marker-color` | 列表符号颜色 |
+| `--wemd-list-marker-color-l2` | 二级列表符号颜色 |
+
+这样你就能同时享受可视化设计器的便利和手写 CSS 的灵活性。
+
+---
+
 ### 基础知识
 
 #### WeMD 如何渲染文章
@@ -356,4 +434,6 @@ WeMD 内置深色模式预览算法，你的主题 CSS **无需单独编写深�
 
 ## 参考模板
 
-如果不想从零开始，可以参考 [templates 目录](https://github.com/tenngoxars/WeMD/tree/main/templates) 里的完整主题文件。
+**推荐方式**：使用可视化设计器创建一个主题，然后导出 CSS 作为起始模板。导出的 CSS 包含完整的变量声明和样式规则。
+
+如果想参考现成的主题文件，可以查看 [templates 目录](https://github.com/tenngoxars/WeMD/tree/main/templates)。
