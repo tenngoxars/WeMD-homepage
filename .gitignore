@@ -11,6 +11,7 @@ dist/
 
 # Vite cache
 .vite/
+vp-docs/.vitepress/cache/
 
 # Local env files
 .env

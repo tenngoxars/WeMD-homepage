@@ -11,7 +11,7 @@ const { Layout } = DefaultTheme
 <template>
   <Layout>
     <template #layout-top>
-      <div class="wemd-gradient-bg" aria-hidden="true"></div>
+      <!-- Background handled by CSS (style.css) -->
     </template>
   </Layout>
 </template>
