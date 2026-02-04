@@ -157,8 +157,8 @@
 }
 
 .custom-block.tip {
-    background-color: rgba(7, 193, 96, 0.05);
-    border-color: rgba(7, 193, 96, 0.1);
+    background-color: var(--vp-c-brand-soft);
+    border-color: rgba(4, 120, 87, 0.1);
 }
 
 /* ========================================
