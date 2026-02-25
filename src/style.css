@@ -42,7 +42,8 @@
     }
 
     .hero-container {
-        width: min(100%, 72rem);
+        width: 100%;
+        max-width: 100%;
     }
 
     /* Interactive Nodes - Right Sidebar Accordion */
@@ -57,7 +58,7 @@
         .hero-container {
             display: grid;
             grid-template-columns: minmax(0, 1fr) clamp(18rem, 24vw, 22rem);
-            column-gap: clamp(2rem, 5vw, 5rem);
+            column-gap: clamp(3rem, 8vw, 11rem);
             align-items: start;
         }
 
