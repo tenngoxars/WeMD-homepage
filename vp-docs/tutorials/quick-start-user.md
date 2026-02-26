@@ -79,10 +79,10 @@ docker compose up -d
 访问 `http://你的服务器IP:8080` 即可使用。
 
 默认会拉取 `ghcr.io/tenngoxars/wemd-web:latest`。  
-如需指定版本镜像，可覆盖环境变量：
+如需指定版本镜像，可按需替换版本号后再执行：
 
 ```bash
-WEMD_IMAGE=ghcr.io/tenngoxars/wemd-web:v1.2.4 docker compose up -d
+WEMD_IMAGE=ghcr.io/tenngoxars/wemd-web:<版本号> docker compose up -d
 ```
 
 ---
@@ -136,4 +136,3 @@ WEMD_IMAGE=ghcr.io/tenngoxars/wemd-web:v1.2.4 docker compose up -d
 - **快捷键**：查看 [快捷键列表](/reference/hotkeys) 提升编辑效率。
 - **深色模式预览**：点击顶部导航栏的 🌙 图标，可预览文章在微信深色模式下的效果。
 - **外链转脚注**：在工具栏中开启「外链转脚注」开关，文章中的链接将自动转换为文末脚注形式。
-
