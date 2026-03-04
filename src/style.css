@@ -115,7 +115,7 @@
 
     /* Typography & Animations */
     .hero-title {
-        font-size: 8vw;
+        font-size: clamp(2.5rem, 8vw, 6.5rem);
         line-height: 0.9;
         font-weight: 400;
         letter-spacing: -0.03em;
@@ -160,10 +160,13 @@
         @apply px-10 py-3 rounded-lg transition-all duration-500 font-mono text-[11px] uppercase tracking-[0.2em] interactive relative flex items-center justify-center;
         background: var(--ink-accent);
         color: white;
+        box-shadow: 0 1px 3px rgba(4, 120, 87, 0.3);
     }
 
     .ink-btn:hover {
-        @apply tracking-[0.3em] opacity-90;
+        @apply tracking-[0.3em];
+        box-shadow: 0 4px 12px rgba(4, 120, 87, 0.4);
+        transform: translateY(-1px);
     }
 
     /* Secondary Button: Clean Architectural Outline */
@@ -171,10 +174,13 @@
         background: transparent !important;
         color: var(--ink-accent) !important;
         border: 1px solid rgba(6, 78, 59, 0.4) !important;
+        box-shadow: none;
     }
 
     .ink-btn.bg-white:hover {
         background: rgba(6, 78, 59, 0.03) !important;
         border-color: rgba(6, 78, 59, 0.8) !important;
+        box-shadow: 0 2px 8px rgba(6, 78, 59, 0.1);
+        transform: translateY(-1px);
     }
 }
