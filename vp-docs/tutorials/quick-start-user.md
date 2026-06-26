@@ -58,9 +58,13 @@ Web 版提供两种存储模式，点击顶部导航栏的 **「存储模式」*
 </details>
 
 ### 🖥️ Desktop 桌面版
-1. 打开 WeMD 桌面应用。
-2. 首次打开会看到欢迎页面，点击 **「选择工作区文件夹」** 按钮。
-3. 在系统文件选择器中选择文件夹，无需额外授权。
+1. 前往 [Releases](https://github.com/tenngoxars/WeMD/releases) 下载桌面版安装包。
+2. 按系统选择对应文件：macOS 下载 `WeMD-<版本号>-arm64-mac.zip`，Windows 下载 `WeMD.Setup.<版本号>.exe`，Linux 下载 `WeMD-<版本号>.AppImage`。
+3. 打开 WeMD 桌面应用。
+4. 首次打开会看到欢迎页面，点击 **「选择工作区文件夹」** 按钮。
+5. 在系统文件选择器中选择文件夹，无需额外授权。
+
+> 当前自动发布的 macOS 安装包为 Apple Silicon 版本；Intel Mac 可优先使用 Web 网页版或自行从源码构建。
 
 ### 🐳 Docker 部署
 
