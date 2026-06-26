@@ -11,11 +11,12 @@ WeMD/
 ├── apps/                 # 应用程序
 │   ├── web/              # Web 版编辑器
 │   ├── electron/          # 桌面版外壳
-│   └── server/           # Logo 图片上传服务 (NestJS)
+│   └── server/           # 图片上传服务 (NestJS)
 ├── packages/             # 共享代码
 │   └── core/             # 核心库（Markdown 解析、主题、深色模式）
 ├── templates/            # 主题 CSS 模板
 ├── scripts/              # 构建脚本
+├── .github/workflows/    # CI、Docker 镜像与发布工作流
 └── turbo.json            # TurboRepo 配置
 ```
 
@@ -54,6 +55,9 @@ apps/web/src/
 ├── lib/              # 核心工具库（平台适配）
 ├── utils/            # 通用工具函数
 ├── types/            # 全局类型定义
+├── bootstrap/        # 启动阶段错误处理等初始化逻辑
+├── test/             # 测试环境配置
+├── __tests__/        # Web 侧单元测试与集成测试
 └── styles/           # 全局样式
 ```
 
@@ -80,9 +84,17 @@ Electron 外壳，包装 Web 版为桌面应用。
 ```
 apps/electron/
 ├── src/
-│   ├── main.ts       # 主进程（窗口管理、菜单、IPC）
+│   ├── main.ts       # 主进程入口
+│   ├── window.ts     # 窗口创建与加载策略
+│   ├── menu.ts       # 桌面菜单
 │   ├── preload.ts    # 预加载脚本（暴露 API 给渲染进程）
-│   └── updater.ts    # 自动更新逻辑
+│   ├── updater.ts    # 自动更新逻辑
+│   ├── ipc/          # 文件、文件夹、剪贴板、窗口、更新等 IPC 注册
+│   ├── watch/        # 工作区递归监听与刷新通知
+│   ├── workspace/    # 工作区状态与文件列表逻辑
+│   └── utils/        # 桌面端工具函数
+├── assets/           # 应用图标等打包资源
+├── electron-builder.json # 打包配置
 ├── tsconfig.json     # TypeScript 配置
 └── package.json      # Electron 依赖配置
 ```
@@ -95,8 +107,11 @@ apps/electron/
 
 ```
 apps/server/src/
-├── upload/           # 上传模块
-└── main.ts           # 入口文件
+├── app.module.ts     # Nest 应用模块
+├── main.ts           # 入口文件
+├── services/         # 腾讯 COS 等服务封装
+├── upload/           # 上传模块、DTO 与实体
+└── app.controller.spec.ts # 基础测试
 ```
 
 ---
@@ -111,6 +126,9 @@ packages/core/src/
 ├── ThemeProcessor.ts     # 主题处理
 ├── wechatDarkMode.ts     # 微信深色模式模拟算法
 ├── plugins/              # Markdown 解析插件
+├── types/                # 插件类型补充
+├── utils/                # 代码高亮等核心工具
+├── __tests__/            # Core 单元测试
 └── themes/               # 内置主题 CSS
     ├── basic.ts          # 基础样式
     ├── academic-paper.ts # 学术论文
@@ -143,3 +161,6 @@ templates/
 | `pnpm build` | 按依赖顺序构建所有包 |
 | `pnpm dev` | 并行启动所有开发服务器 |
 | `pnpm lint` | 检查所有包的代码 |
+| `pnpm --filter @wemd/web test` | 运行 Web 测试 |
+| `pnpm --filter @wemd/core test` | 运行 Core 测试 |
+| `pnpm --filter wemd-electron test` | 运行 Electron 测试 |
