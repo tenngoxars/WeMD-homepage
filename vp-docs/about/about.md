@@ -20,3 +20,14 @@ WeMD 的诞生源于对现有微信编辑器的三个不满：
 我们针对微信公众号的渲染引擎（基于 Webkit）进行了专门的 CSS 调优。
 - **内联样式**：为了防止样式在粘贴时丢失，我们在渲染时就计算好了 Computed Styles。
 - **兼容性**：我们测试了 iOS、Android 微信客户端的深色模式表现，确保你的文章在手机上看起来和电脑上一样好。
+
+## 支持 WeMD
+
+WeMD 会继续保持免费、开源。目前官方图床的免费存储空间逐渐吃紧，如果这个项目对你有所帮助，欢迎通过微信或支付宝自愿支持。收到的支持将优先用于图片存储、带宽及项目持续维护。
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: center; gap: 24px; margin: 24px 0;">
+  <img src="/support/wechat-pay.jpg" width="260" alt="微信支付收款码" />
+  <img src="/support/alipay.jpg" width="260" alt="支付宝收款码" />
+</div>
+
+感谢每一份支持，也请量力而行。
