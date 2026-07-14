@@ -137,12 +137,18 @@ WeMD 提供两种创建自定义主题的方式：**可视化设计器**（推�
 
 #### 为单个元素指定样式
 
-如果只想调整某一个段落、标题或表格，可以在 Markdown 中为它添加局部属性：
+如果只想调整某一个段落、标题、表格、图片、链接或行内格式，可以在 Markdown 中为它添加局部属性：
 
 ```markdown
 ## 重点章节 {.featured-heading}
 
 这是一段摘要。 {.summary data-kind=abstract}
+
+![文章封面](https://example.com/cover.png){.hero-image}
+
+[查看详情](https://example.com){.cta-link}
+
+这是 **重点内容**{.inline-highlight}。
 ```
 
 然后在手写 CSS 中使用对应的选择器：
@@ -157,6 +163,19 @@ WeMD 提供两种创建自定义主题的方式：**可视化设计器**（推�
     background: #fff1f0;
     border-left: 4px solid #b42318;
 }
+
+#wemd .hero-image {
+    border-radius: 12px;
+}
+
+#wemd .cta-link {
+    color: #1677ff;
+}
+
+#wemd .inline-highlight {
+    padding: 0 2px;
+    background: #fff1b8;
+}
 ```
 
 表格属性需要另起一行，并与表格之间保留一个空行：
@@ -169,7 +188,9 @@ WeMD 提供两种创建自定义主题的方式：**可视化设计器**（推�
 {.compact-table #feature-table}
 ```
 
-属性语法仅允许 `class`、`id` 和 `data-*`，不能直接写入 `style` 或事件属性。复制到微信公众号时，主题 CSS 会先根据这些属性内联到元素上，因此即使公众号清理了部分属性，最终视觉样式仍可保留。
+行内属性可用于链接、图片、斜体、粗体、删除线、行内代码、高亮、下划线、上标和下标。纯文本不会自动包裹 `<span>`；带标题并被转换为脚注的外链也不再生成 `<a>`，因此这两种情况没有可承载属性的目标元素。
+
+属性语法仅允许 `class`、`id` 和 `data-*`，不能覆盖图片 `src`、链接 `href`，也不能直接写入 `style` 或事件属性。复制到微信公众号时，主题 CSS 会先根据这些属性内联到元素上，因此即使公众号清理了部分属性，最终视觉样式仍可保留。
 
 #### 深色模式适配
 

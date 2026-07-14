@@ -32,7 +32,7 @@
 
 ### 局部属性与自定义样式
 
-可以在段落、标题或表格后添加 `{.class #id data-*=value}`，再通过自定义主题 CSS 精确设置该元素的样式。
+可以在段落、标题、表格、图片、链接或已有行内格式后添加 `{.class #id data-*=value}`，再通过自定义主题 CSS 精确设置该元素的样式。
 
 ```markdown
 ## 本章摘要 {.chapter-title #chapter-summary}
@@ -44,6 +44,12 @@
 | 阅读量 | 1200 |
 
 {.compact-table #metrics}
+
+![文章封面](https://example.com/cover.png){.hero-image #cover}
+
+[查看详情](https://example.com){.cta-link}
+
+这是 **重点内容**{.inline-highlight}。
 ```
 
 对应的自定义 CSS：
@@ -57,9 +63,23 @@
 #wemd .compact-table {
   font-size: 13px;
 }
+
+#wemd .hero-image {
+  border-radius: 12px;
+}
+
+#wemd .cta-link {
+  color: #1677ff;
+}
+
+#wemd .inline-highlight {
+  background: #fff1b8;
+}
 ```
 
-第一版仅支持段落、标题和表格，允许 `class`、`id` 与 `data-*`。`style`、`onclick` 等其他属性不会写入 HTML；`id="wemd"`、`data-tool` 与 `data-wemd-*` 是系统保留项。需要原样显示以 `{` 开头的属性写法时，可以写成 `\{.class}`。
+行内属性支持链接、图片，以及斜体、粗体、删除线、行内代码、高亮、下划线、上标、下标等已有格式。纯文本不会自动包裹 `<span>`；需要局部样式时，应先使用一种行内格式。带标题的外链会被 WeMD 转换为脚注，不再生成 `<a>`，此时紧随其后的属性文本会按原文保留。
+
+属性仅允许 `class`、`id` 与 `data-*`。`style`、`onclick`、`src`、`href` 等其他属性不会写入或覆盖 Markdown 自身生成的地址；`id="wemd"`、`data-tool` 与 `data-wemd-*` 是系统保留项。列表项、代码围栏、分隔线、软换行和表格单元格暂不支持。需要原样显示以 `{` 开头的属性写法时，可以写成 `\{.class}`。
 
 ### 任务列表
 
