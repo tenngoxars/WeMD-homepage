@@ -30,6 +30,37 @@
 | `H~2~O` | H₂O | 下标 |
 | `X^2^` | X² | 上标 |
 
+### 局部属性与自定义样式
+
+可以在段落、标题或表格后添加 `{.class #id data-*=value}`，再通过自定义主题 CSS 精确设置该元素的样式。
+
+```markdown
+## 本章摘要 {.chapter-title #chapter-summary}
+
+这是一段需要单独排版的摘要。 {.summary data-kind=abstract}
+
+| 指标 | 数值 |
+| --- | --- |
+| 阅读量 | 1200 |
+
+{.compact-table #metrics}
+```
+
+对应的自定义 CSS：
+
+```css
+#wemd .summary {
+  padding: 12px 16px;
+  background: #fff7e6;
+}
+
+#wemd .compact-table {
+  font-size: 13px;
+}
+```
+
+第一版仅支持段落、标题和表格，允许 `class`、`id` 与 `data-*`。`style`、`onclick` 等其他属性不会写入 HTML；`id="wemd"`、`data-tool` 与 `data-wemd-*` 是系统保留项。需要原样显示以 `{` 开头的属性写法时，可以写成 `\{.class}`。
+
 ### 任务列表
 
 ```markdown

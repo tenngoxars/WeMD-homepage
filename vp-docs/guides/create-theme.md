@@ -135,6 +135,42 @@ WeMD 提供两种创建自定义主题的方式：**可视化设计器**（推�
 - 引用块什么背景色、边框
 - ...等等
 
+#### 为单个元素指定样式
+
+如果只想调整某一个段落、标题或表格，可以在 Markdown 中为它添加局部属性：
+
+```markdown
+## 重点章节 {.featured-heading}
+
+这是一段摘要。 {.summary data-kind=abstract}
+```
+
+然后在手写 CSS 中使用对应的选择器：
+
+```css
+#wemd .featured-heading {
+    color: #b42318;
+}
+
+#wemd .summary[data-kind="abstract"] {
+    padding: 12px 16px;
+    background: #fff1f0;
+    border-left: 4px solid #b42318;
+}
+```
+
+表格属性需要另起一行，并与表格之间保留一个空行：
+
+```markdown
+| 项目 | 状态 |
+| --- | --- |
+| 局部样式 | 已支持 |
+
+{.compact-table #feature-table}
+```
+
+属性语法仅允许 `class`、`id` 和 `data-*`，不能直接写入 `style` 或事件属性。复制到微信公众号时，主题 CSS 会先根据这些属性内联到元素上，因此即使公众号清理了部分属性，最终视觉样式仍可保留。
+
 #### 深色模式适配
 
 WeMD 内置深色模式预览算法，你的主题 CSS **无需单独编写深色版**，算法会自动转换并尽量贴近微信公众号深色模式效果。
