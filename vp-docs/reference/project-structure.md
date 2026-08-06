@@ -74,6 +74,7 @@ apps/web/src/
 | 图床上传 | `services/image/` |
 | 图床设置 | `components/Settings/ImageHostSettings.tsx` |
 | 历史记录管理 | `components/History/HistoryManager.tsx` |
+| PWA 配置（manifest/离线缓存） | `vite.config.ts`（`vite-plugin-pwa`）+ `public/pwa/` 图标 + 部署侧 `nginx.conf`（`sw.js` 缓存放行） |
 
 ---
 

@@ -62,6 +62,8 @@ pnpm dev:web
 
 终端显示 `Local: http://localhost:5173/` 后，在浏览器打开。
 
+> 💡 **PWA 提示**：开发模式（`pnpm dev:web`）不会生成 Service Worker，PWA 的安装/离线能力只在构建产物中生效。验证 PWA 需先 `pnpm --filter @wemd/web build`，再 `pnpm --filter @wemd/web preview`。
+
 ### Desktop 桌面版
 
 需要两个终端窗口：
