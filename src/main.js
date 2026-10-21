@@ -9,11 +9,11 @@ const config = {
     cursorSize: 50,  // Reduced from 80
     isViscous: false,
     viscous: 30,
-    iterationsViscous: 32,
-    iterationsPoisson: 32,
+    iterationsViscous: 24,
+    iterationsPoisson: 24,
     dt: 0.01,       // Slower, smoother flow (was 0.014)
     BFECC: true,
-    resolution: 0.5
+    resolution: 0.4
 };
 
 // --- Shaders (GLSL) ---
@@ -220,6 +220,8 @@ const Common = {
         this.renderer.setPixelRatio(this.pixelRatio);
         this.renderer.setSize(this.width, this.height);
 
+        this.renderer.domElement.className = 'bg-fluid';
+        this.renderer.domElement.setAttribute('aria-hidden', 'true');
         container.appendChild(this.renderer.domElement);
 
         this.clock = new THREE.Clock();
@@ -584,6 +586,9 @@ function init() {
     Mouse.init();
 
     simulation = new FluidSimulation();
+
+    window.__weMDApp.pause = () => { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } };
+    window.__weMDApp.resume = () => { if (!rafId) loop(); };
 
     // Update Github Stars
     updateGithubStars();

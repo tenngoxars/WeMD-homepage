@@ -29,11 +29,48 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap"
         rel="stylesheet">
 
-    <script type="module" src="/src/main.js" defer></script>
+    <script type="module" src="/src/background.js" defer></script>
     <style>
         /* Prevent FOUC: Hide body until JS/CSS is ready */
-        body {
-            opacity: 0;
+        body { opacity: 0; }
+
+        /* 一屏适配：只在矮屏收紧纵向节奏，不改版式 */
+        @media (max-height: 820px) and (min-width: 1281px) {
+            main.ui-layer { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+            .hero-container { margin-top: 1.25rem !important; }
+            .hero-title { font-size: clamp(2.2rem, 6vw, 4.6rem) !important; line-height: 0.92 !important; }
+            .hero-desc { margin-top: 1.5rem !important; }
+            footer { margin-top: 1rem !important; }
+        }
+        @media (min-width: 1180px) and (max-width: 1280px) {
+            .hero-container {
+                display: grid !important;
+                grid-template-columns: minmax(0, 1fr) clamp(14rem, 22vw, 18rem) !important;
+                column-gap: clamp(1.5rem, 4vw, 4rem) !important;
+                align-items: start !important;
+            }
+            .info-sidebar {
+                position: relative !important;
+                left: auto !important;
+                top: 0 !important;
+                margin: 0.5rem 0 0 !important;
+                width: auto !important;
+                justify-self: end !important;
+            }
+        }
+        @media (max-height: 820px) and (min-width: 1180px) {
+            main.ui-layer { padding-top: 1.75rem !important; padding-bottom: 1.75rem !important; }
+            .hero-container { margin-top: 0.75rem !important; }
+            .hero-title { font-size: clamp(2.1rem, 5.8vw, 4.4rem) !important; }
+            .hero-desc { margin-top: 1.25rem !important; }
+            footer { margin-top: 0.75rem !important; }
+        }
+        @media (max-height: 760px) and (min-width: 1180px) {
+            main.ui-layer { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+            .hero-container { margin-top: 0.75rem !important; }
+            .hero-title { font-size: clamp(2rem, 5.4vw, 4rem) !important; }
+            .hero-desc { margin-top: 1rem !important; }
+            footer { margin-top: 0.5rem !important; }
         }
     </style>
 </head>
@@ -41,7 +78,7 @@
 <body class="selection:bg-emerald-900 selection:text-white">
 
     <!-- The Digital Paper -->
-    <div id="fluid-canvas" class="fixed inset-0 z-0 pointer-events-none opacity-20"></div>
+    <div id="fluid-canvas" class="fixed inset-0 z-0 pointer-events-none"></div>
 
     <!-- The Content -->
     <main class="ui-layer min-h-screen flex flex-col justify-between p-8 md:p-16">
