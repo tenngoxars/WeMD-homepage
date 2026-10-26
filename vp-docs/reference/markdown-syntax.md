@@ -1,3 +1,7 @@
+---
+description: WeMD 支持的全部 Markdown 语法，包括标准语法、扩展语法，以及用于自定义主题的局部属性写法。
+---
+
 # Markdown 语法参考
 
 本文档列出 WeMD 支持的所有 Markdown 语法，包括标准语法和扩展语法。

@@ -5,8 +5,20 @@ export default defineConfig({
     description: 'WeMD 是一款专为微信公众号设计的 Markdown 排版编辑器',
     lang: 'zh-CN',
     base: '/docs/',
+    // base 是 /docs/，hostname 必须带上，否则 sitemap 里的地址会丢掉 /docs/ 前缀
     sitemap: {
-        hostname: 'https://wemd.app'
+        hostname: 'https://wemd.app/docs/',
+        transformItems: (items) => [{ url: 'https://wemd.app/' }, ...items]
+    },
+
+    transformHead: ({ pageData }) => {
+        const url = `https://wemd.app/docs/${pageData.relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '.html')}`
+        const title = pageData.title && pageData.title !== 'WeMD 文档' ? `${pageData.title} | WeMD 文档` : 'WeMD 文档'
+        return [
+            ['link', { rel: 'canonical', href: url }],
+            ['meta', { property: 'og:url', content: url }],
+            ['meta', { property: 'og:title', content: title }]
+        ]
     },
 
     head: [
@@ -14,6 +26,8 @@ export default defineConfig({
         ['meta', { name: 'theme-color', content: '#07c160' }],
         ['meta', { property: 'og:type', content: 'website' }],
         ['meta', { property: 'og:site_name', content: 'WeMD' }],
+        ['meta', { property: 'og:image', content: 'https://wemd.app/og-image.png' }],
+        ['meta', { name: 'twitter:card', content: 'summary' }],
         [
             'script',
             { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-ZX315WS5VE' }

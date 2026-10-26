@@ -1,3 +1,7 @@
+---
+description: WeMD 使用文档：公众号 Markdown 编辑器的上手教程、主题定制、图床配置、Markdown 语法和常见问题。
+---
+
 # WeMD 文档
 
 欢迎来到 WeMD 文档中心。

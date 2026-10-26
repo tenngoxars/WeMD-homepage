@@ -1,3 +1,7 @@
+---
+description: WeMD 源码目录结构说明：基于 pnpm workspace 与 TurboRepo 的 Monorepo，包含 Web、桌面端和图片上传服务。
+---
+
 # 项目结构
 
 WeMD 采用 Monorepo 架构，使用 pnpm workspace + TurboRepo 管理。
