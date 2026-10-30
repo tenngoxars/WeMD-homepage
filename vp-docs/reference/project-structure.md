@@ -6,8 +6,6 @@ description: WeMD 源码目录结构说明：基于 pnpm workspace 与 TurboRepo
 
 WeMD 采用 Monorepo 架构，使用 pnpm workspace + TurboRepo 管理。
 
----
-
 ## 目录总览
 
 ```
@@ -24,8 +22,6 @@ WeMD/
 └── turbo.json            # TurboRepo 配置
 ```
 
----
-
 ## 各目录详解
 
 ### apps/web/（Web 版主程序）
@@ -35,13 +31,14 @@ WeMD/
 ```
 apps/web/src/
 ├── components/       # React 组件
-│   ├── Editor/       # Markdown 编辑器
+│   ├── Editor/       # Markdown 编辑器（含 AI 改写、全文审阅、起标题、格式化菜单）
 │   ├── Preview/      # 预览区
 │   ├── Header/       # 顶部导航
-│   ├── Sidebar/      # 文件侧边栏
+│   ├── Sidebar/      # 文件侧边栏与文件树
+│   ├── Workspace/    # 编辑区与预览区布局
 │   ├── Theme/        # 主题管理（含可视化设计器）
 │   ├── History/      # 历史记录与版本
-│   ├── Settings/     # 设置面板 (图床等)
+│   ├── Settings/     # 设置面板（图床、AI 等）
 │   └── Welcome/      # 首次使用欢迎页
 ├── store/            # Zustand 状态管理
 │   ├── editorStore.ts    # 编辑器状态（内容）
@@ -54,7 +51,9 @@ apps/web/src/
 │       ├── IndexedDBAdapter.ts   # 浏览器存储
 │       └── FileSystemAdapter.ts  # 本地文件夹
 ├── hooks/            # 自定义 Hooks
-├── services/         # 业务服务（图床上传）
+├── services/         # 业务服务（复制到公众号、导出、图床上传、AI）
+│   ├── ai/           # AI 服务商配置、请求与提示词
+│   └── image/        # 图床上传
 ├── config/           # 静态配置（样式常量）
 ├── lib/              # 核心工具库（平台适配）
 ├── utils/            # 通用工具函数
@@ -78,9 +77,10 @@ apps/web/src/
 | 图床上传 | `services/image/` |
 | 图床设置 | `components/Settings/ImageHostSettings.tsx` |
 | 历史记录管理 | `components/History/HistoryManager.tsx` |
+| AI 服务商与请求 | `services/ai/aiConfig.ts`、`services/ai/aiClient.ts` |
+| AI 设置面板 | `components/Settings/AiSettings.tsx` |
+| 复制到公众号 | `services/wechatCopyService.ts` |
 | PWA 配置（manifest/离线缓存） | `vite.config.ts`（`vite-plugin-pwa`）+ `public/pwa/` 图标 + 部署侧 `nginx.conf`（`sw.js` 缓存放行） |
-
----
 
 ### apps/electron/（桌面版）
 
@@ -104,8 +104,6 @@ apps/electron/
 └── package.json      # Electron 依赖配置
 ```
 
----
-
 ### apps/server/（后端服务）
 
 基于 NestJS 的简单的服务端，主要用于处理特殊的图片上传需求。
@@ -119,8 +117,6 @@ apps/server/src/
 └── app.controller.spec.ts # 基础测试
 ```
 
----
-
 ### packages/core/（核心库）
 
 与 UI 无关的核心逻辑。
@@ -129,6 +125,7 @@ apps/server/src/
 packages/core/src/
 ├── MarkdownParser.ts     # Markdown 转 HTML
 ├── ThemeProcessor.ts     # 主题处理
+├── MarkdownFormatter.ts  # 一键格式化（中英文空格、全角标点、直角引号、清理空白）
 ├── wechatDarkMode.ts     # 微信深色模式模拟算法
 ├── plugins/              # Markdown 解析插件
 ├── types/                # 插件类型补充
@@ -137,11 +134,9 @@ packages/core/src/
 └── themes/               # 内置主题 CSS
     ├── basic.ts          # 基础样式
     ├── academic-paper.ts # 学术论文
-    ├── cyberpunk-neon.ts # 赛博朋克
+    ├── modern-editorial.ts # 编辑部手记
     └── ...
 ```
-
----
 
 ### templates/（主题模板）
 
@@ -154,8 +149,6 @@ templates/
 ├── Cyberpunk-Neon.css
 └── ...
 ```
-
----
 
 ## TurboRepo 任务
 

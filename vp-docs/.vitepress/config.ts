@@ -62,6 +62,7 @@ export default defineConfig({
             {
                 text: '操作指南',
                 items: [
+                    { text: 'AI 写作辅助', link: '/guides/ai-writing' },
                     { text: '配置图床', link: '/guides/setup-image-hosting' },
                     { text: '新增自定义主题', link: '/guides/create-theme' }
                 ]

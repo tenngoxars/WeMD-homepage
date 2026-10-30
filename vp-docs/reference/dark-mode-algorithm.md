@@ -1,280 +1,285 @@
 ---
-description: WeMD 如何在编辑器里预览微信公众号深色模式：基于官方 mp-darkmode 的色彩语义保全算法原理与参数。
+description: WeMD 如何在编辑器里预览微信公众号深色模式：参考官方 mp-darkmode 的色彩转换算法原理与内置阈值。
 ---
 
 # 微信深色模式预览算法
 
-WeMD 内置了一套**色彩语义保全算法**，可在编辑器中预览微信公众号深色模式下的实际效果，还原度达 **98% 以上**。
+WeMD 内置了一套色彩转换算法，用来在编辑器里预览文章在微信深色模式下大致的样子，效果接近微信实机，但预览和实机仍可能有差异，以手机上的实际显示为准。
 
 > [!NOTE]
-> 该算法深度参考了微信官方公开的 [wechatjs/mp-darkmode](https://github.com/wechatjs/mp-darkmode) 核心逻辑，通过将其核心数学模型迁移至 CSS 静态转换引擎，实现了零延迟、零闪烁的高还原度预览。
+> 该算法参考了微信官方公开的 [wechatjs/mp-darkmode](https://github.com/wechatjs/mp-darkmode)，把其中的颜色计算逻辑搬到了对 CSS 文本的静态转换上。感谢官方开源。
 
-这（可能）是目前市面上唯一除官方外针对微信公众号深色模式预览的开源解决方案。
+## 作用范围
 
+深色转换**只作用于编辑器预览**：
 
----
+- 编辑器预览、主题管理里的实时预览，在深色界面下会显示转换后的效果。
+- 「复制到公众号」和「导出」（复制 HTML、导出长图）输出的始终是**浅色**样式表，不包含深色转换结果。
+- 读者在微信里开启深色模式时，颜色由微信客户端自己转换。
 
-## TL;DR
+所以这套算法的用途是让你在写作时提前看到深色模式下可能出现的问题（比如文字看不清、背景太亮），而不是改变发出去的文章。
 
-**挑战**：微信深色模式的转换逻辑虽然已有开源实现（[mp-darkmode](https://github.com/wechatjs/mp-darkmode)），但官方方案依赖运行时 JS，在公众号预览场景下存在延迟与兼容性门槛。
+## 怎么触发
 
-**解决方案**：WeMD 深度对齐官方核心算法，在编辑器中 1:1 还原其渲染行为（还原度 > 98%）。
+点击顶栏右侧的月亮图标，把编辑器切到深色界面，预览会同步显示微信深色效果；再点一次（此时是太阳图标）切回浅色。
 
-**核心思路**：将官方运行时逻辑转化为高性能的静态 CSS 转换引擎，支持背景图自动补色与属性优先级排序，实现零延迟、零闪烁的实机级预览。
-
-
----
+转换是同步计算的，结果按 CSS 内容的哈希缓存，同一套主题第二次切换时直接命中缓存，没有网络请求和异步等待。
 
 ## 与官方 mp-darkmode 的区别
 
-虽然 WeMD 的核心数学模型参考了官方算法，但在实现架构上有着本质的不同：
+WeMD 的颜色计算参考了官方算法，但实现方式不同：
 
-| 特性 | 官方 [mp-darkmode](https://github.com/wechatjs/mp-darkmode) | **WeMD 内置算法** |
+| 特性 | 官方 [mp-darkmode](https://github.com/wechatjs/mp-darkmode) | WeMD 内置算法 |
 | :--- | :--- | :--- |
-| **实现逻辑** | **DOM 驱动 (运行时)** | **CSS 驱动 (编译/预览时)** |
-| **准确度** | **极高** (原生渲染环境) | **极高** (已完美复刻官方核心转换数学模型) |
-| **性能体验** | 可能存在加载闪变 (FOUC) | **零延迟、无感切换 (内置静态生成)** |
-| **运行要求** | 必须真实浏览器环境 | **无环境依赖** (Node.js/Electron 通用) |
-
-### 核心权衡
-
-**为什么WeMD不直接用官方 JS 库？**
-1. **高性能交付**：WeMD 输出的是一份“成品”样式表。读者打开文章时，浏览器不需要额外运行一段沉重的 JS 来动态改颜色，这能显著提升加载速度。
-2. **预览一致性**：在 WeMD 编辑器中能看到的，就是最终吐出来的 CSS 效果，没有运行时变量干扰。
+| 实现方式 | DOM 驱动，运行时读取元素的实际样式 | 对 CSS 文本做静态转换 |
+| 运行要求 | 需要真实的浏览器 DOM 环境 | 纯 TypeScript，无运行时依赖，浏览器、Node.js、Electron 均可运行 |
+| 使用场景 | 微信读者端 | WeMD 编辑器预览 |
 
 **官方算法在哪方面更强？**
-*   **层级上下文敏感度**：如果一个元素的背景色是由 5 层父元素外的 CSS 定义的，官方运行时算法能轻松拿到最终计算值，而 WeMD 的静态扫描很难百分百还原这种深层嵌套。
-*   **动态内容适配**：如果你的页面是通过 JS 动态生成的，官方库能实时监听，WeMD 无法做到。
 
----
+- **层级上下文**：如果一个元素的背景色来自好几层外的父元素，官方运行时算法能拿到最终计算值；WeMD 只看单条 CSS 规则内声明的背景色，深层嵌套的情况可能和实机不一致。
+- **动态内容**：页面内容由 JS 动态生成时，官方库可以实时监听，WeMD 不处理这类情况。
 
 ## 核心原理
 
-### HSL 色彩空间转换
+### HSL 色彩空间与感知亮度
 
-算法使用 HSL（色相-饱和度-亮度）色彩空间进行计算：
+算法在 HSL（色相、饱和度、亮度）色彩空间里调整颜色，并用「感知亮度」衡量颜色看起来有多亮：
 
 ```typescript
 function rgbToHsl(r, g, b): [h, s, l]
 function hslToRgb(h, s, l): [r, g, b]
+
+// 感知亮度，范围 0–255
+function getColorPerceivedBrightness(rgb) {
+  return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+}
 ```
 
-**为什么选择 HSL？**
-- 色相（H）保持不变：红色还是红色
-- 饱和度（S）可独立调整：控制颜色鲜艳程度
-- 亮度（L）精确映射：这是深色模式的核心
+下文提到的「感知亮度」都指这个值，「HSL 亮度」指 HSL 里的 L（0–100）。
 
 ### 元素类型识别
 
-算法通过 CSS 选择器识别 14 种元素类型：
+类型识别分两层。
 
-```typescript
-type ElementType = 
-  | 'heading'           // 标题
-  | 'body'              // 正文
-  | 'background'        // 背景
-  | 'table'             // 表格背景
-  | 'table-text'        // 表格文字
-  | 'blockquote'        // 引用块背景
-  | 'blockquote-text'   // 引用块文字
-  | 'code'              // 代码块背景
-  | 'code-text'         // 代码块文字
-  | 'selection'         // 选中区域背景
-  | 'selection-text'    // 选中区域文字
-  | 'decorative-dark'   // 深色装饰（阴影/边框）
-  | 'vibrant-protected' // 鲜艳色保护
-  | 'other'             // 其他
-```
-
-识别规则基于选择器关键词匹配：
+**第一层：选择器定基础类型。** `getElementType()` 按顺序匹配，返回 7 种基础类型之一：
 
 ```typescript
 function getElementType(selector: string): ElementType {
-    if (/blockquote|callout|multiquote/.test(selector)) return 'blockquote';
-    if (/pre|code|hljs|language-/.test(selector)) return 'code';
-    if (/table|tr|th|td/.test(selector)) return 'table';
-    if (/h[1-6]/.test(selector)) return 'heading';
-    // ...
+  const s = selector.toLowerCase();
+  if (s.includes("ue-table-interlace-color-single")) return "table";
+  if (s.includes("ue-table-interlace-color-double")) return "table";
+  if (s.includes("js_darkmode__")) return "other";
+
+  if (/blockquote|callout|multiquote/.test(s)) return "blockquote";
+  if (/\b(pre|code|hljs|language-)/.test(s)) return "code";
+  if (/table|tr|th|td/.test(s)) return "table";
+  if (/h[1-6]/.test(s)) return "heading";
+  if (/::selection/.test(s)) return "selection";
+  if (s.includes("body")) return "body";
+  return "other";
 }
 ```
 
-### 亮度区间映射
+**第二层：属性名与颜色特征细分。** `transformDeclarations()` 再根据每条声明的属性名决定最终类型：
 
-不同元素类型映射到不同的深色亮度区间：
+| 属性 | 判定方式 | 最终类型 |
+| :--- | :--- | :--- |
+| 属性名含 `background` / `bgcolor` | 按基础类型 | `table` / `blockquote` / `selection` / `code`，其余为 `background` |
+| 属性名含 `shadow`、`border`、`outline`、`column-rule` | 看颜色：感知亮度 < 20 | `decorative-dark` |
+| 同上 | 看颜色：HSL 饱和度 > 15 | `vibrant-protected` |
+| 同上 | 其余 | 按文字处理（见下一行） |
+| 属性名含 `color`、`-webkit-text-stroke`、`-webkit-text-fill-color` 等 | 按基础类型 | `table-text` / `blockquote-text` / `selection-text` / `code-text`，其余保持基础类型 |
 
-| 元素类型 | 亮度区间 (L%) | 饱和度系数 |
-|---------|-------------|-----------|
-| body | 10% | 0 |
-| background | 12% - 18% | 0.5 |
-| table | 10% - 24% | 0.6 |
-| blockquote | 14% - 22% | 0.7 |
-| code | 10% - 20% | 0.5 |
-| selection | 45% - 65% | 0.6 |
-| decorative-dark | 10% - 15% | 0 |
-| vibrant-protected | 35% - 55% | 1.0 |
+### 背景色亮度调整
 
-映射公式（背景色）：
-```typescript
-newL = maxL - (originalL / 100) * (maxL - minL)
-```
+`background`、`table`、`blockquote`、`selection`、`vibrant-protected` 五类共用 `adjustBackgroundBrightness()`，按以下分支处理：
 
-### 对比度保全
+| 条件 | 处理 |
+| :--- | :--- |
+| 近白：饱和度 < 10 且 HSL 亮度 > 40，或感知亮度 > 235 | HSL 亮度改为 `min(100, 100 + 10 - 原亮度)`；饱和度 > 10 时截到最多 30，否则归零 |
+| 感知亮度 > 190 | 按比例压到感知亮度 190 |
+| HSL 亮度 < 22 | HSL 亮度抬到 22 |
+| 其余 | 原样保留 |
 
-文字颜色需要与背景保持足够对比度：
+例如纯白 `#ffffff`（HSL 亮度 100）会变成 HSL 亮度 10，即 `#1a1a1a`。注意「近白」分支对浅灰同样生效：HSL 亮度 50 的中灰会被转成亮度 60，反而变亮。
 
-```typescript
-function adjustTextBrightness(textRgb, textHsl, bgRgb) {
-    const bgL = getColorPerceivedBrightness(bgRgb);
-    const minL = bgL + 65;   // 最小亮度差
-    const maxL = bgL + 180;  // 最大亮度差
-    // 将文字亮度调整到 [minL, maxL] 区间
-}
-```
+代码块背景（`code`）走 `adjustCodeBackgroundBrightness()`：近白分支与上面相同；其余颜色感知亮度超过 40 时压到 40。
 
-### 背景图层完美对齐 (Background Layering)
+深色装饰（`decorative-dark`）走 `adjustDecorativeDarkBrightness()`：饱和度减半，HSL 亮度夹在 10–15 之间。
 
-针对带有 `background-image` 的元素，WeMD 会自动在图片底层追加一层转换后的深色背景，并同步复制定位与尺寸属性：
+### 文字对比度保全
+
+文字颜色（包括 `heading`、`body`、`other`、`table-text`、`blockquote-text`、`selection-text`）走 `adjustTextBrightness()`，用文字与背景的**感知亮度差**判断。背景默认取深色底 `rgb(25, 25, 25)`；如果同一条规则里声明了背景色，则取该背景转换后的颜色。
+
+1. 文字感知亮度 ≥ 250（接近白色）：原样保留。
+2. 亮度差 > 138 且背景感知亮度 ≤ 27：把文字压到感知亮度 `138 + 背景感知亮度`，避免过亮刺眼。
+3. 亮度差 ≥ 65：对比度足够，原样保留。
+4. 亮度差不足 65，且背景感知亮度 ≥ 100（浅色背景）：文字 HSL 亮度 > 50 时改为 `90 - 原亮度` 后重新判断；否则压到感知亮度 `min(138, 背景 - 65)`。
+5. 亮度差不足 65，且背景偏深：文字 HSL 亮度 ≤ 40 时改为 `90 - 原亮度` 后重新判断；否则调到感知亮度 `min(138, 背景 + 65)`。
+
+按这些规则，默认背景下纯黑正文 `#000000` 最终会变成 `#a3a3a3`。
+
+代码块文字（`code-text`）单独走 `adjustCodeTextBrightness()`：HSL 亮度 > 75 时保留；否则饱和度变为 `min(100, 原饱和度 × 1.1 + 5)`，亮度至少 78。
+
+### 背景图补色层
+
+同一条规则里如果声明了可转换的背景色，且 `background-image` 或 `background` 的值里有 `url(...)` 图片，算法会在图片下方追加一层转换后的纯色渐变，并同步给 `background-size`、`background-position` 追加对应的值：
 
 ```css
 /* 输入 */
-.card { 
-    background-image: url(logo.png); 
+.card {
+    background-image: url(logo.png);
     background-color: #fff;
     background-size: cover;
     background-position: center;
 }
 
 /* 输出 */
-.card { 
-    background-color: #191919; 
-    background-image: url(logo.png), linear-gradient(#191919, #191919); 
+.card {
+    background-color: #1a1a1a;
+    background-image: url(logo.png), linear-gradient(#1a1a1a, #1a1a1a);
     background-size: cover, 100%;
     background-position: center, top left;
 }
 ```
 
-**目的**：确保在图片加载前、透明背景或具有特殊定位/拉伸的图片场景下，底部的补色层始终能与图片区域完美对齐映射。
+前提条件：
 
-### 属性精度对齐与排序 (Property Sorting)
+- 背景色必须写在同一条规则的 `background-color` 或 `background` 里，且为 HEX 或 `rgb()` / `rgba()` 格式。
+- 背景色的值不含渐变；图片值转换后已经含 `linear-gradient` 的也不再追加。
+- 原值带 `!important` 时会保留，并放到追加后的值末尾。
 
-为了确保复杂选择器下的渲染顺序与微信官方 SDK 一致，算法实现了全量属性矩阵支持与严格排序：
-- **全属性支持**：除基础色值外，还支持 `box-shadow`、`outline`、`column-rule` (分栏线)、`-webkit-text-stroke` 等 20+ 种属性的精准转换。
-- **严格排序**：
-  - `-webkit-text-*` 相关属性最优先执行，确保文本特殊样式不被覆盖。
-  - `background-image` 紧随 `background-color` 之后，保证叠加层级正确。
-  - `color` 属性由于优先级最高，被置于声明块最后输出。
+这样在图片加载前或图片有透明区域时，底下也有一层深色背景。
 
----
+### 属性排序
+
+转换后，同一条规则内的声明按以下三条规则排序，其余属性保持原来的相对顺序：
+
+- 以 `-webkit-text` 开头的属性排在最前。
+- `color` 排在最后。
+- 属性名含 `image` 的排在属性名含 `color` 的之后。
 
 ## 处理流程
 
 ```
 CSS 输入
     ↓
-解析选择器 → 识别元素类型 (getElementType)
+convertCssToWeChatDarkMode()：已转换过直接返回；命中缓存直接返回
     ↓
-解析属性值 → 提取颜色值 (HEX/RGB/HSL)
+parseCssBlocks()：拆分规则与 @ 规则
     ↓
-属性类型判断 → 背景色/文字色/阴影边框
-    ↓
-颜色转换 → processColorRgb()
-    ├── 背景类 → adjustBackgroundBrightness()
-    ├── 文字类 → adjustTextBrightness() / adjustCodeTextBrightness()
-    ├── 深色装饰 → adjustDecorativeDarkBrightness()
-    └── 鲜艳保护 → adjustBackgroundBrightness() (保持高亮度)
+transformDeclarations()：逐条规则处理
+    ├── getElementType()：选择器 → 基础类型
+    ├── 预扫描本规则的背景色，算出转换后的背景
+    ├── 属性名 + 颜色特征 → 最终类型
+    ├── convertColorValue()：提取 HEX / rgb() / hsl() 颜色
+    │       ↓
+    │   processColorRgb()
+    │       ├── code → adjustCodeBackgroundBrightness()
+    │       ├── 其它背景类与 vibrant-protected → adjustBackgroundBrightness()
+    │       ├── decorative-dark → adjustDecorativeDarkBrightness()
+    │       ├── code-text → adjustCodeTextBrightness()
+    │       └── 其余文字类 → adjustTextBrightness()
+    ├── 背景图补色层
+    └── 属性排序
     ↓
 CSS 输出
 ```
 
----
+## 内置阈值（当前不可配置）
 
-## 配置参数
+算法的阈值都写死在源码里，`convertCssToWeChatDarkMode(css)` 只接受 CSS 字符串一个参数：
 
-算法提供可配置的阈值参数：
+| 常量 | 值 | 用途 |
+| :--- | :--- | :--- |
+| `WHITE_LIKE_COLOR_BRIGHTNESS` | 250 | 感知亮度达到此值视为白色 |
+| 近白阈值（`NEAR_WHITE_PERCEIVED`） | 235 | 背景感知亮度超过此值走近白分支 |
+| `MAX_LIMIT_BGCOLOR_BRIGHTNESS` | 190 | 背景感知亮度上限 |
+| `MAX_LIMIT_OFFSET` | 138 | 文字与背景的最大感知亮度差 |
+| `HIGH_BGCOLOR_BRIGHTNESS` | 100 | 背景感知亮度达到此值视为浅色背景 |
+| `MIN_LIMIT_OFFSET_BRIGHTNESS` | 65 | 文字与背景的最小感知亮度差 |
+| `HIGH_BLACKWHITE_HSL_BRIGHTNESS` | 40 | HSL 亮度判断阈值 |
+| `CODE_MAX_BG_PERCEIVED` | 40 | 代码块背景感知亮度上限 |
+| `LOW_BLACKWHITE_HSL_BRIGHTNESS` | 22 | 背景 HSL 亮度下限 |
+| `DEFAULT_DARK_BG_L_OFFSET` | 10 | 近白背景转换时的亮度偏移 |
+| 深色装饰判定 | 感知亮度 < 20 | 边框、阴影类颜色归为 `decorative-dark` |
+| 鲜艳色判定 | 饱和度 > 15 | 边框、阴影类颜色归为 `vibrant-protected` |
 
-```typescript
-interface DarkModeConfig {
-    vibrantSaturationThreshold: number;  // 鲜艳色保护阈值，默认 15
-    vibrantLightnessRange: [number, number];  // 鲜艳色亮度区间，默认 [35, 55]
-    decorativeDarkLuminanceThreshold: number;  // 深色锚定阈值，默认 20
-}
-```
-
----
+源码中还有一个 `DarkModeConfig` 接口（含 `vibrantSaturationThreshold`、`vibrantLightnessRange`、`decorativeDarkLuminanceThreshold`），目前没有接入转换流程，是预留接口，修改它不会影响结果。
 
 ## 设计建议
 
 ### 颜色格式
 
-✅ **推荐**：HEX (`#333`) 或 RGB (`rgb(51,51,51)`)
+**推荐**：HEX（`#333`）、`rgb()` / `rgba()`、`hsl()` / `hsla()`。HEX 支持 3、4、6、8 位，带 alpha 的 HEX 和 `rgba()` / `hsla()` 的透明度会原样保留。
 
-❌ **避免**：颜色名称 (`black`, `white`)
+**避免**：颜色名称（`black`、`white`）。
 
 ### 背景色
 
-✅ **推荐**：`transparent` 或浅灰色
+**推荐**：`transparent` 或浅灰色。
 
-❌ **避免**：纯白 `#ffffff` 作为容器背景
+**避免**：纯白 `#ffffff` 作为容器背景。
 
 ### 品牌色
 
-✅ **放心使用**：饱和度 > 15% 的色彩会被自动保护
+边框、阴影、轮廓线、分栏线的颜色，饱和度 > 15 时按背景色规则处理，色相和饱和度基本保留，但感知亮度超过 190 的仍会被压暗。文字颜色不看饱和度，一律只做对比度调整。
 
 ### 阴影
 
-✅ **放心使用**：亮度 < 20 的深色阴影会保持深色
-
----
+感知亮度 < 20 的深色阴影、边框会保持深色：HSL 亮度夹在 10–15 之间，饱和度减半。
 
 ## 局限性
 
 | 场景 | 说明 |
-|------|------|
-| CSS 变量 | `var(--xxx)` 不会被处理 |
-| 颜色名称 | `black`、`white` 不会被转换 |
-| 渐变 | `linear-gradient` 等渐变不会被处理（微信不支持） |
-| 图片 | 图片本身不会被处理（与微信一致） |
-
----
+| :--- | :--- |
+| CSS 变量 | 含 `var(--xxx)` 的值不会被处理 |
+| 颜色名称 | `black`、`white` 等不会被转换 |
+| 渐变 | 渐变结构保留，其中的色标会被转换；但渐变背景不会追加补色层 |
+| 背景继承 | 只参考同一条规则内声明的背景色，不追溯父元素 |
+| 图片 | 图片本身不会被处理 |
 
 ## 常见问题
 
-### Q: 为什么某个颜色转换后看起来不对？
+### Q：为什么某个颜色转换后看起来不对？
 
 可能的原因：
-1. 使用了颜色名称（如 `black`）而非 HEX 格式
+
+1. 使用了颜色名称（如 `black`）
 2. 使用了 CSS 变量 `var(--xxx)`
-3. 原色的饱和度/亮度恰好处于阈值边界
+3. 原色恰好处于阈值边界（如饱和度 15、感知亮度 20、235、190）
 
-**解决方法**：将颜色改为 HEX 格式，如 `#000000`。
+**解决方法**：把颜色改为 HEX 格式，如 `#000000`。
 
-### Q: 预览效果和微信实际效果有差异怎么办？
+### Q：预览效果和微信实际效果有差异怎么办？
 
-算法还原度达 98% 以上，以下场景可能有差异：
+预览效果接近微信实机，但两者实现方式不同，以下场景更容易出现差异：
+
 - 半透明颜色的叠加效果
 - 极端亮度值（接近纯黑或纯白）
+- 背景色写在父元素上、子元素文字依赖它的情况
 
-> [!NOTE]
-> 渐变（`gradient`）会被直接跳过不做转换，因为微信公众号不支持 CSS 渐变。
+渐变色标会被转换，不会跳过。
 
-如果发现明显差异，欢迎提交 Issue，我会持续优化算法。
+如果发现明显差异，欢迎反馈问题，我们会持续优化算法。
 
-### Q: 自定义主题需要做什么适配吗？
+### Q：自定义主题需要做什么适配吗？
 
-不需要。只要颜色使用 HEX/RGB 格式，算法会自动处理。参见上方"设计建议"部分。
-
----
+不需要。只要颜色使用 HEX、`rgb()` 或 `hsl()` 格式，算法会自动处理。参见上方「设计建议」部分。
 
 ## 源码位置
 
 核心实现：`packages/core/src/wechatDarkMode.ts`
 
-| 函数 | 作用 |
-|------|------|
-| `convertCssToWeChatDarkMode()` | 主入口，CSS 整体转换 |
-| `getElementType()` | 选择器 → 元素类型 |
-| `processColorRgb()` | 颜色转换调度器 |
-| `adjustBackgroundBrightness()` | 背景色亮度调整 |
-| `adjustTextBrightness()` | 文字对比度调整 |
+| 函数 | 作用 | 是否导出 |
+| :--- | :--- | :--- |
+| `convertCssToWeChatDarkMode()` | 主入口，整段 CSS 转换（带缓存） | 是 |
+| `convertToWeChatDarkMode()` | 单个 HEX 颜色按指定类型转换 | 是 |
+| `getElementType()` | 选择器 → 基础类型 | 否 |
+| `processColorRgb()` | 颜色转换调度 | 否 |
+| `adjustBackgroundBrightness()` | 背景色亮度调整 | 否 |
+| `adjustCodeBackgroundBrightness()` | 代码块背景亮度调整 | 否 |
+| `adjustTextBrightness()` | 文字对比度调整 | 否 |
 
 欢迎查阅源码或提交改进建议。

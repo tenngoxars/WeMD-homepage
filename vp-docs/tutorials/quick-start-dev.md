@@ -6,19 +6,15 @@ description: 在本地搭建 WeMD 开发环境：获取代码、安装依赖、�
 
 本文档帮助你在本地搭建 WeMD 开发环境。
 
----
-
 ## 环境要求
 
-| 工具 | 最低版本 | 检查命令 |
+| 工具 | 版本 | 检查命令 |
 | :--- | :--- | :--- |
-| Node.js | 18.0.0 | `node -v` |
-| pnpm | 9.0.0 | `pnpm -v` |
+| Node.js | 22（与 CI 一致） | `node -v` |
+| pnpm | 9 | `pnpm -v` |
 | Git | - | `git --version` |
 
-> 💡 推荐使用 [nvm](https://github.com/nvm-sh/nvm) 管理 Node 版本，使用 `npm install -g pnpm` 安装 pnpm。
-
----
+> 推荐使用 [nvm](https://github.com/nvm-sh/nvm) 管理 Node 版本，用 `corepack enable pnpm` 启用 pnpm。
 
 ## 步骤 1：获取代码
 
@@ -26,8 +22,6 @@ description: 在本地搭建 WeMD 开发环境：获取代码、安装依赖、�
 git clone https://github.com/tenngoxars/WeMD.git
 cd WeMD
 ```
-
----
 
 ## 步骤 2：安装依赖
 
@@ -38,7 +32,7 @@ pnpm install
 WeMD 是 Monorepo 结构，pnpm 会自动处理 workspace 链接。
 
 <details>
-<summary>⚠️ 常见错误：node-gyp 编译失败</summary>
+<summary>常见错误：node-gyp 编译失败</summary>
 
 如果遇到 `node-gyp` 相关错误，可能缺少编译工具：
 
@@ -47,14 +41,9 @@ WeMD 是 Monorepo 结构，pnpm 会自动处理 workspace 链接。
 xcode-select --install
 ```
 
-**Windows**:
-```bash
-npm install -g windows-build-tools
-```
+**Windows**：安装 [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)，勾选「使用 C++ 的桌面开发」。
 
 </details>
-
----
 
 ## 步骤 3：启动开发服务器
 
@@ -66,36 +55,21 @@ pnpm dev:web
 
 终端显示 `Local: http://localhost:5173/` 后，在浏览器打开。
 
-> 💡 **PWA 提示**：开发模式（`pnpm dev:web`）不会生成 Service Worker，PWA 的安装/离线能力只在构建产物中生效。验证 PWA 需先 `pnpm --filter @wemd/web build`，再 `pnpm --filter @wemd/web preview`。
+> **PWA 提示**：开发模式（`pnpm dev:web`）不会生成 Service Worker，PWA 的安装/离线能力只在构建产物中生效。验证 PWA 需先 `pnpm --filter @wemd/web build`，再 `pnpm --filter @wemd/web preview`。
 
 ### Desktop 桌面版
 
-需要两个终端窗口：
-
-**终端 1**（先启动 Web 服务）:
-```bash
-pnpm dev:web
-```
-
-**终端 2**（等 Web 启动后）:
-```bash
-pnpm dev:electron
-```
-
-或使用一键脚本：
 ```bash
 pnpm dev:desktop
 ```
 
----
+这条命令会先启动 Web 开发服务器，等 `http://localhost:5173` 就绪后再启动 Electron。如果 Web 服务已经在运行，也可以只执行 `pnpm dev:electron`。
 
 ## 步骤 4：验证热更新
 
 1. 打开 `apps/web/src/App.tsx`
 2. 修改任意文字，保存
 3. 浏览器应自动刷新显示修改
-
----
 
 ## 项目常用命令
 
@@ -106,8 +80,6 @@ pnpm dev:desktop
 | `pnpm build` | 构建所有项目 |
 | `pnpm lint` | 代码检查 |
 | `pnpm format` | 格式化代码 |
-
----
 
 ## 下一步
 

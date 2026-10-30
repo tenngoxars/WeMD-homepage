@@ -1,33 +1,56 @@
 ---
-description: 为 WeMD 配置七牛云、阿里云 OSS 或腾讯云 COS 图床，粘贴或拖入的图片自动上传，密钥只存在本地浏览器。
+description: WeMD 默认使用官方图床，粘贴图片即可上传；也可以换成七牛云、阿里云 OSS、腾讯云 COS 或 S3 兼容存储，密钥只保存在本机。
 ---
 
 # 配置图床
 
-图床让你的图片上传到云端，获得稳定的外链 URL。配置完成后，粘贴或拖入编辑器的图片会自动上传。
+图床负责把图片存到云端，换回一个能公开访问的图片地址。在编辑区粘贴图片，或者点工具栏的「上传图片」选择文件，WeMD 会把图片上传到当前启用的图床，再把图片的 Markdown 写进文章。
 
----
+WeMD 默认用官方图床，不配置也能直接上传。想把图片放在自己的存储里，再按下面的步骤配置第三方图床。
+
+## 官方图床
+
+- 默认启用，不需要填写任何 Key。
+- 图片会上传到 WeMD 的官方服务（`https://api.wemd.app`），由它返回图片地址。
+- 官方图床没有「测试连接」按钮。换成别的图床之后想切回来，打开「图床设置」，在「官方图床」标签页点「启用官方图床」即可。
+- 官方服务端对单张图片的大小和格式有没有额外限制，目前没有公开说明。WeMD 在上传前会先把图片处理到 2 MB 以内，见下一节。
+
+## 上传前会发生什么
+
+无论用哪个图床，粘贴和工具栏上传都走同一套流程：
+
+- 图片不超过 2 MB：原样上传，不做处理。
+- 图片超过 2 MB：自动压缩到 2 MB 以内再上传，成功提示里会显示压缩前后的大小。
+- 自动压缩只支持 JPEG、PNG、WebP。PNG 超过 2 MB 时会转成 JPEG 再压缩，透明背景会丢失。
+- 以下情况会直接报错，需要先自己压缩好再上传：
+  - 超过 2 MB 的 GIF 等其它格式；
+  - 原图超过 40 MB，或者超过 3600 万像素；
+  - 自动压缩后仍然超过 2 MB。
 
 ## 基础概念
 
 | 名词 | 说明 |
 | :--- | :--- |
-| **AccessKey / SecretKey** | 云服务商的 API 密钥，用于身份验证 |
-| **Bucket** | 存储空间名称，类似文件夹 |
-| **Domain** | 外链域名，图片 URL 的前缀（如 `https://cdn.example.com`） |
-| **Region / Area** | 存储区域代码，影响访问速度 |
+| **AccessKey / SecretKey** | 云服务商的 API 密钥，用来给上传请求签名 |
+| **Bucket** | 存储空间，图片实际存放的地方 |
+| **域名** | 图片地址的前缀（如 `https://cdn.example.com`），读者就是通过它看到图片 |
+| **Region（地域）** | 存储区域代码，决定上传到哪个端点、用哪个区域签名。填错会直接上传失败，不只是变慢 |
 
----
+## 步骤 1：准备 Bucket 和密钥
 
-## 步骤 1：获取密钥
+先在云服务商那边建好 Bucket，并确认三件事：
 
-在云服务商控制台获取 AccessKey 和 SecretKey：
+1. 密钥对这个 Bucket 有写入权限（「测试连接」会真的写文件，见下文）。
+2. Bucket 开了公共读，或者绑定的 CDN 域名能匿名访问。WeMD 上传时不会给文件单独设置访问权限，Bucket 是私有的话，上传能成功，但图片打不开。
+3. 阿里云 OSS、腾讯云 COS、S3 兼容存储需要配置 CORS，见下文「测试时报跨域错误」。
+
+然后获取密钥：
 
 <details>
 <summary>七牛云</summary>
 
 1. 登录 [七牛云控制台](https://portal.qiniu.com/)
-2. 点击右上角头像 → **密钥管理**
+2. 点击右上角头像 →「密钥管理」
 3. 复制 AccessKey 和 SecretKey
 
 </details>
@@ -35,101 +58,151 @@ description: 为 WeMD 配置七牛云、阿里云 OSS 或腾讯云 COS 图床，
 <details>
 <summary>阿里云 OSS</summary>
 
-1. 登录 [阿里云控制台](https://ram.console.aliyun.com/)
-2. 访问管理 → **用户** → 创建用户（勾选 OpenAPI 调用访问）
+1. 登录 [RAM 访问控制](https://ram.console.aliyun.com/)
+2. 「用户」→ 创建用户，勾选「OpenAPI 调用访问」
 3. 创建后复制 AccessKey ID 和 AccessKey Secret
-4. 给用户添加权限：**AliyunOSSFullAccess**
+4. 只给这个用户授予目标 Bucket 的 `oss:PutObject` 权限。WeMD 上传和测试都只用到写入，不需要 `AliyunOSSFullAccess` 这类全量权限
 
 </details>
 
 <details>
 <summary>腾讯云 COS</summary>
 
-1. 登录 [腾讯云控制台](https://console.cloud.tencent.com/cam/capi)
-2. 访问管理 → **访问密钥** → API 密钥管理
+1. 登录 [访问管理控制台](https://console.cloud.tencent.com/cam/capi)
+2. 「访问密钥」→「API 密钥管理」
 3. 新建密钥，复制 SecretId 和 SecretKey
+4. 建议用子用户的密钥，并只授予目标存储桶的 `PutObject` 和 `HeadBucket` 权限（上传用前者，「测试连接」用后者）
 
 </details>
 
----
+<details>
+<summary>S3 兼容存储（AWS S3、Cloudflare R2、MinIO 等）</summary>
 
-## 步骤 2：进入图床设置
+- **AWS S3**：在 IAM 里创建用户和访问密钥，策略只允许目标 Bucket 的 `s3:PutObject` 和 `s3:DeleteObject`（「测试连接」会写入一个测试文件再删掉）。
+- **Cloudflare R2**：在 R2 里创建 API 令牌，权限选对象读写，并限定到目标 Bucket，记下 Access Key ID、Secret Access Key 和 S3 API 地址。R2 的 S3 API 地址不能直接公开访问图片，需要在 Bucket 上开启公开访问（`r2.dev` 子域名或绑定自己的域名），再把这个地址填到「自定义域名」。
+- **MinIO**：在控制台创建 Access Key，绑定只允许写入目标 Bucket 的策略；Bucket 的匿名访问设为只读，图片才能被公开访问。
 
-点击顶部导航栏的 **「图床设置」** 按钮。
+</details>
 
----
+## 步骤 2：打开图床设置
+
+点击顶栏的「图床设置」。弹窗顶部有五个标签页：「官方图床」「七牛云」「阿里云 OSS」「腾讯云 COS」「S3 兼容」。当前启用的那个会带「使用中」标记。
+
+切换标签页只是查看和编辑对应图床的配置，不会改变当前使用的图床。换图床也不会搬移已经上传的图片，旧图片的地址仍然指向原来的图床；想让它们继续显示，原来的存储不能停用。
 
 ## 步骤 3：填写配置
 
+所有输入都会自动保存，没有单独的「保存」按钮。如果你在旧版本里给阿里云或腾讯云填过自定义域名，升级后仍然生效，不需要重新填写。
+
 ### 七牛云
+
+切换到「七牛云」标签页：
 
 | 字段 | 填写内容 |
 | :--- | :--- |
-| 服务商 | 选择「七牛云」 |
 | AccessKey | 密钥管理中的 AK |
 | SecretKey | 密钥管理中的 SK |
-| Bucket | 存储空间名称（在对象存储中创建） |
-| Domain | 绑定的外链域名（必须 `http://` 或 `https://` 开头） |
-| Area | 区域代码：`z0`=华东, `z1`=华北, `z2`=华南, `na0`=北美, `as0`=东南亚 |
+| 存储空间名称（Bucket） | 存储空间名称 |
+| 存储区域 | 从下拉中选择 Bucket 所在区域：华东-浙江（`z0`，默认）、华东-浙江2（`cn-east-2`）、华北-河北（`z1`）、华南-广东（`z2`）、北美-洛杉矶（`na0`）、亚太-新加坡（`as0`） |
+| CDN 域名 | 必填，写完整的带协议域名，如 `https://img.example.com`。七牛的测试域名只支持 `http://` |
+
+之前选过「亚太-首尔」的话，下拉里会出现一条提示不可用的选项，重新选一个区域即可。
+
+图片地址为「CDN 域名/文件名」，文件名为 `时间戳_原文件名`。
 
 ### 阿里云 OSS
 
+切换到「阿里云 OSS」标签页：
+
 | 字段 | 填写内容 |
 | :--- | :--- |
-| 服务商 | 选择「阿里云」 |
-| AccessKey | RAM 用户的 AccessKey ID |
-| SecretKey | RAM 用户的 AccessKey Secret |
-| Bucket | 存储桶名称 |
-| Domain | 绑定的自定义域名，或使用默认外网访问域名 |
-| Region | 区域：`oss-cn-hangzhou`, `oss-cn-beijing`, `oss-cn-shanghai` 等 |
+| AccessKey ID | RAM 用户的 AccessKey ID |
+| AccessKey Secret | RAM 用户的 AccessKey Secret |
+| Bucket 名称 | 存储桶名称 |
+| 地域节点 | 如 `oss-cn-hangzhou`（杭州）、`oss-cn-beijing`（北京），要带 `oss-` 前缀 |
+| 自定义域名（可选） | 绑定到 Bucket 的域名，写完整的带协议形式，如 `https://cdn.example.com` |
+
+不填自定义域名时，图片地址为 `https://{Bucket}.{地域节点}.aliyuncs.com/{文件名}`；填了就用自定义域名拼接。文件名为 `时间戳_原文件名`。
 
 ### 腾讯云 COS
 
+切换到「腾讯云 COS」标签页：
+
 | 字段 | 填写内容 |
 | :--- | :--- |
-| 服务商 | 选择「腾讯云」 |
 | SecretId | API 密钥中的 SecretId |
 | SecretKey | API 密钥中的 SecretKey |
-| Bucket | 存储桶名称（格式：`name-appid`） |
-| Domain | 绑定的加速域名或默认域名 |
-| Region | 区域：`ap-guangzhou`, `ap-shanghai`, `ap-beijing` 等 |
+| 存储桶名称（Bucket） | 格式为 `bucketname-appid`，如 `my-images-1250000000` |
+| 所属地域 | 如 `ap-guangzhou`（广州）、`ap-beijing`（北京） |
+| 自定义域名（可选） | 绑定到存储桶的域名，写完整的带协议形式，如 `https://cdn.example.com` |
+
+不填自定义域名时，图片地址为 `https://{Bucket}.cos.{所属地域}.myqcloud.com/{文件名}`；填了就用自定义域名拼接。文件名为 `时间戳_原文件名`。
 
 ### S3 兼容存储
 
-适用于 AWS S3、Cloudflare R2、MinIO、DigitalOcean Spaces 等支持 S3 协议的存储服务。
+适用于 AWS S3、Cloudflare R2、MinIO 等支持 S3 协议的存储。切换到「S3 兼容」标签页：
 
 | 字段 | 填写内容 |
 | :--- | :--- |
-| 服务商 | 选择「S3 兼容存储」 |
-| **Endpoint** | S3 API 接口地址（如 `https://s3.amazonaws.com` 或 `https://play.min.io`） |
-| **Region** | 区域代码（如 `us-east-1`，MinIO 可填 `us-east-1` 或留空） |
-| **AccessKey** | Access Key ID |
-| **SecretKey** | Secret Access Key |
-| **Bucket** | 存储桶名称 |
-| Path Style | 是否强制使用路径风格访问（MinIO 通常需要开启） |
-| Custom Domain | (可选) 自定义 CDN 域名，不填则使用 Endpoint 拼接 |
+| Endpoint（必填） | S3 API 地址，如 `https://s3.amazonaws.com`、`https://<账户 ID>.r2.cloudflarestorage.com` |
+| Region（必填） | 区域代码，如 `us-east-1`。Cloudflare R2 填 `auto`。留空无法通过测试 |
+| Access Key ID（必填） | 访问密钥 ID |
+| Secret Access Key（必填） | 访问密钥 |
+| Bucket 名称（必填） | 存储桶名称 |
+| 路径前缀（可选） | 图片存放的目录，如 `images/wemd` |
+| 自定义域名（可选） | 用来访问图片的 CDN 或自定义域名，写完整的带协议形式，如 `https://cdn.example.com`。不补协议的话拼出来的地址会缺少协议 |
+| 强制 Path Style | MinIO 等自建服务通常需要勾选 |
+| 兼容旧版 S3 | 老版本 S3 兼容服务上传时报 `501 NotImplemented` 再勾选。勾选后不再发送新版 SDK 附加的校验和、`x-amz-user-agent` 等请求头和 `x-id` 查询参数 |
 
----
+图片地址的拼法（`文件路径` 就是填了路径前缀时的 `{路径前缀}/{文件名}`，没填就是 `{文件名}`）：
 
-## 步骤 4：验证并保存
+- 填了自定义域名：`{自定义域名}/{文件路径}`
+- 没填、未勾选强制 Path Style：`{Endpoint 协议}://{Bucket}.{Endpoint 主机}/{文件路径}`
+- 没填、勾选了强制 Path Style：`{Endpoint}/{Bucket}/{文件路径}`
 
-1. 点击 **「检查」** 按钮
-   - 🟢 显示「配置有效」→ 点击「保存」
-   - 🔴 显示错误 → 见下方常见问题
+## 步骤 4：测试并启用
 
----
+1. 填完字段，点「测试连接」。
+   - 显示「配置有效」：可以启用。
+   - 显示「配置无效」或具体错误：先检查字段，再看下方常见问题。
+2. 点面板底部的「启用七牛云图床」「启用阿里云 OSS」「启用腾讯云 COS」或「启用 S3 图床」。启用时会再测试一次，失败会提示「无法启用：图床连接测试失败，请检查配置」，当前图床保持不变。
+3. 启用成功后，标签页上出现「使用中」，之后粘贴和上传的图片都会传到这个图床。
+
+### 「测试连接」做了什么
+
+| 图床 | 测试方式 |
+| :--- | :--- |
+| 七牛云 | 上传一个 `validate-时间戳.txt` 测试文件，不会自动删除 |
+| 阿里云 OSS | 上传一个 `_test_时间戳.txt` 测试文件，不会自动删除 |
+| 腾讯云 COS | 只读取存储桶信息，不写文件 |
+| S3 兼容 | 上传一个 `_test_时间戳.txt` 测试文件，随后删除 |
+
+测试通过只说明密钥、Bucket、地域能完成请求，不代表域名、CDN、公共读都配置对了。七牛云和阿里云留下的测试文件可以在控制台里手动删掉。启用后建议先粘贴一张图，确认文章里的图片能正常显示。
 
 ## 常见问题
 
-### Q: 检查时报跨域错误？
-Web 端受浏览器安全策略限制，部分云服务商需要配置 CORS。建议：
-- 使用 **Desktop 桌面版**验证配置
-- 或在云服务商控制台开启 CORS（允许 `*` 来源）
+### Q: 测试时报跨域错误？
+
+上传请求是由编辑器页面直接发往云服务商的，网页版和桌面版都受浏览器跨域（CORS）规则限制，桌面版并不能绕过。需要在 Bucket 的 CORS 设置里添加一条规则：
+
+- 允许来源：`https://edit.wemd.app`，以及桌面版的来源 `null`（桌面版从本地文件加载页面）。也可以直接填 `*`。
+- 允许方法：`GET`、`PUT`、`POST`、`DELETE`、`HEAD`。
+- 允许请求头：`*`。
+
+七牛云如果也报跨域错误，按同样思路检查。
 
 ### Q: 上传成功但图片显示不出来？
-检查 Domain 是否正确：
-- 必须以 `http://` 或 `https://` 开头
-- 如果用 CDN 加速域名，确保已完成域名绑定和备案
+
+按这个顺序排查：
+
+1. **Bucket 是否允许公共读**：WeMD 不会给上传的文件单独设置访问权限，私有 Bucket 的图片地址打不开。
+2. **域名是否带协议**：七牛云的「CDN 域名」和 S3 的「自定义域名」会原样拼进图片地址，漏写 `https://` 会得到无效地址。
+3. **是否是 `http://` 地址**：在 `https://` 页面里加载 `http://` 图片会被浏览器当作混合内容拦截。七牛测试域名只支持 `http://`，正式使用请绑定支持 HTTPS 的域名。
+4. **域名本身是否可用**：用的是 CDN 或自定义域名的话，确认已经完成绑定和备案，在浏览器里直接打开图片地址能看到图片。
 
 ### Q: AccessKey 和 SecretKey 安全吗？
-密钥只保存在你的浏览器本地存储中，不会上传到任何服务器。
+
+- 图床配置以明文 JSON 保存在当前页面的 `localStorage` 里：`imageHostConfigs` 保存所有填过的图床配置，`imageHostConfig` 保存当前启用的那一个。切换图床不会删除其它图床已经填的密钥。
+- 密钥不会发给 WeMD 的服务器，但会用来给发往你所选云服务商的上传请求签名。
+- 网页版和桌面版的配置各自独立，互不同步，需要分别填写。
+- 在公用电脑上用过之后，记得清除这个网站的站点数据。建议使用只有写入权限的子账号密钥，见步骤 1。
