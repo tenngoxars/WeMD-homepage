@@ -26,13 +26,6 @@
     <meta property="og:image" content="https://wemd.app/og-image.png">
     <meta name="twitter:card" content="summary">
 
-    <!-- Fonts: Noto Serif SC + JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap"
-        rel="stylesheet">
-
     <script type="module" src="/src/background.js" defer></script>
     <style>
         /* Prevent FOUC: Hide body until JS/CSS is ready */
@@ -42,7 +35,7 @@
         @media (max-height: 820px) and (min-width: 1281px) {
             main.ui-layer { padding-top: 2rem !important; padding-bottom: 2rem !important; }
             .hero-container { margin-top: 1.25rem !important; }
-            .hero-title { font-size: clamp(2.2rem, 6vw, 4.6rem) !important; line-height: 0.92 !important; }
+            .hero-title { font-size: clamp(2.2rem, 6vw, 4.6rem) !important; line-height: 1 !important; }
             .hero-desc { margin-top: 1.5rem !important; }
             footer { margin-top: 1rem !important; }
         }
@@ -113,9 +106,9 @@
                 </a>
 
                 <h2 class="hero-title animate-in delay-1">
-                    <span class="block">更优雅的</span>
-                    <span class="block ml-20">公众号</span>
-                    <span class="block text-right">排版体验。</span>
+                    <span class="hero-line">更优雅的</span>
+                    <span class="hero-line hero-line-2">公众号</span>
+                    <span class="hero-line hero-line-3">排版体验。</span>
                 </h2>
 
                 <p class="hero-desc animate-in delay-2">
@@ -138,15 +131,15 @@
                     <span class="node-label"><span>01 /</span><span>本地优先</span></span>
                     <div class="node-content">
                         <h3>你的文字，握在手里</h3>
-                        <p>真正的 Local First 体验。不经过云端，所有的草稿都真切地存放在你的硬盘里，编辑更安心。</p>
+                        <p>文章只保存在你的电脑里，可以存在浏览器，也可以存进你选的本地文件夹。不用注册登录，也不经过 WeMD 的服务器。</p>
                     </div>
                 </div>
 
                 <div class="info-node">
                     <span class="node-label"><span>02 /</span><span>精准预览</span></span>
                     <div class="node-content">
-                        <h3>眼里看到的，就是手机里的</h3>
-                        <p>内置色彩语义保全算法，支持 98% 高还原深色预览。在按下复制键前，一切细节已尽在掌握。</p>
+                        <h3>复制之前，先看手机里的样子</h3>
+                        <p>内置深色模式预览算法，参考微信官方开源实现，在按下复制键前就能看到文章在微信深色模式下的效果，接近实机表现。</p>
                     </div>
                 </div>
 
@@ -162,7 +155,15 @@
                     <span class="node-label"><span>04 /</span><span>开源多端</span></span>
                     <div class="node-content">
                         <h3>全平台支持</h3>
-                        <p>提供 macOS、Windows 客户端与网页版；网页版支持 PWA，可安装到桌面或主屏并离线使用。作为开源项目，代码完全透明，并支持私有化部署。</p>
+                        <p>提供 macOS、Windows、Linux 客户端与网页版；网页版支持 PWA，可安装到桌面或主屏并离线使用。作为开源项目，代码完全透明，并支持私有化部署。</p>
+                    </div>
+                </div>
+
+                <div class="info-node">
+                    <span class="node-label"><span>05 /</span><span>AI 辅助</span></span>
+                    <div class="node-content">
+                        <h3>改写、审阅、起标题</h3>
+                        <p>选中一段文字即可润色、精简或换语气，也能审阅全文、生成标题。填入自己的 API Key 使用，内容直接发给你选的服务商，不经过 WeMD。</p>
                     </div>
                 </div>
             </div>

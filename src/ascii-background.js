@@ -1,3 +1,7 @@
+// 字体自托管：霞鹜文楷按 unicode-range 分片按需下载，不再依赖 Google Fonts
+import 'lxgw-wenkai-webfont/lxgwwenkai-regular.css';
+import 'lxgw-wenkai-webfont/lxgwwenkai-bold.css';
+import '@fontsource/jetbrains-mono/400.css';
 import './style.css';
 
 /* ============================================================
@@ -15,11 +19,15 @@ const CW = 18;
 const CH = 28;
 const RAMP = ' .·:-=+*#';
 const DRIP_INTERVAL = 55;    // 约每 1.2 秒自动滴一滴墨
+const TEXT_PAD = 6;          // 文字外留白，像素
+const TEXT_FEATHER = 28;     // 留白外的渐变宽度，像素
+const MASK_EVERY = 20;       // 每隔多少帧重算一次文字位置，跟上入场动画和展开的侧栏
 
 let canvas, ctx, cols = 0, rows = 0;
 let dpr = Math.min(window.devicePixelRatio || 1, 2);
 let dens = null;
 let next = null;
+let mask = null;            // 每格墨色系数：1 为原样，0 为完全让开文字
 let mx = -9999, my = -9999;
 let lastMx = -9999, lastMy = -9999;
 let t = 0;
@@ -85,6 +93,68 @@ function resize() {
   rows = Math.ceil(h / CH);
   dens = new Float32Array(cols * rows);
   next = new Float32Array(cols * rows);
+  mask = new Float32Array(cols * rows).fill(1);
+  updateMask();
+}
+
+// 文字所在区域的可见范围：沿祖先链裁掉 overflow 隐藏的部分（如收起的侧栏条目）
+function visibleBox(el, root) {
+  let l = -Infinity, t = -Infinity, r = Infinity, b = Infinity;
+  for (let e = el; e && e !== root.parentElement; e = e.parentElement) {
+    const cs = getComputedStyle(e);
+    if (cs.display === 'none' || cs.visibility === 'hidden') return null;
+    if (cs.overflow !== 'visible') {
+      const box = e.getBoundingClientRect();
+      l = Math.max(l, box.left); t = Math.max(t, box.top);
+      r = Math.min(r, box.right); b = Math.min(b, box.bottom);
+    }
+  }
+  return r - l > 1 && b - t > 1 ? { l, t, r, b } : null;
+}
+
+// 按页面上每一行文字的实际位置算出让位系数，墨水流到文字附近会自然淡出
+function updateMask() {
+  const root = document.querySelector('main');
+  if (!root || !mask) return;
+  const base = container.getBoundingClientRect();
+  const rects = [];
+  const range = document.createRange();
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (!n.nodeValue.trim()) continue;
+    const clip = visibleBox(n.parentElement, root);
+    if (!clip) continue;
+    // 按钮、徽标这类带边框的链接按整个外框让位，只按文字行算会让墨水压到边框上
+    const control = n.parentElement.closest('a, button');
+    let lines;
+    if (control && root.contains(control)) {
+      lines = [control.getBoundingClientRect()];
+    } else {
+      range.selectNodeContents(n);
+      lines = range.getClientRects();
+    }
+    for (const q of lines) {
+      const l = Math.max(q.left, clip.l), t = Math.max(q.top, clip.t);
+      const r = Math.min(q.right, clip.r), b = Math.min(q.bottom, clip.b);
+      if (r - l < 1 || b - t < 1) continue;
+      rects.push(l - base.left, t - base.top, r - base.left, b - base.top);
+    }
+  }
+
+  for (let row = 0; row < rows; row++) {
+    const y = row * CH + CH / 2;
+    for (let c = 0; c < cols; c++) {
+      const x = c * CW + CW / 2;
+      let d = Infinity;
+      for (let k = 0; k < rects.length; k += 4) {
+        const dx = Math.max(rects[k] - x, 0, x - rects[k + 2]);
+        const dy = Math.max(rects[k + 1] - y, 0, y - rects[k + 3]);
+        d = Math.min(d, Math.hypot(dx, dy));
+      }
+      const s = Math.min(1, Math.max(0, (d - TEXT_PAD) / TEXT_FEATHER));
+      mask[c + row * cols] = s * s * (3 - 2 * s);
+    }
+  }
 }
 
 function onMove(e) {
@@ -191,7 +261,8 @@ function draw() {
       const ch = RAMP[idx];
       if (ch === ' ') continue;
 
-      const alpha = 0.06 + Math.pow(Math.min(1, vv), 0.9) * 0.9;
+      const alpha = (0.06 + Math.pow(Math.min(1, vv), 0.9) * 0.9) * mask[c + r * cols];
+      if (alpha < 0.02) continue;
       ctx.fillStyle = `rgba(${inkRGB}, ${alpha})`;
       ctx.fillText(ch, c * CW + CW / 2, r * CH + CH / 2);
     }
@@ -200,6 +271,7 @@ function draw() {
 
 function frame() {
   step();
+  if (frameCount % MASK_EVERY === 0) updateMask();
   draw();
   rafId = requestAnimationFrame(frame);
 }

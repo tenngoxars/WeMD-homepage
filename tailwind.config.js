@@ -9,6 +9,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                serif: ['LXGW WenKai', 'Kaiti SC', 'STKaiti', 'KaiTi', 'serif'],
                 mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
