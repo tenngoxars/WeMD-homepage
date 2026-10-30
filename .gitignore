@@ -21,3 +21,4 @@ vp-docs/.vitepress/cache/
 # AI Agent files
 .agentdocs/
 .gemini/
+fonts/src/

@@ -32,8 +32,8 @@
     --vp-c-border: rgba(0, 0, 0, 0.08);
 
     /* Typography：全站用霞鹜文楷，缺字时回落到系统楷体、黑体 */
-    --vp-font-family-base: "LXGW WenKai", "Kaiti SC", "STKaiti", "KaiTi", "PingFang SC", "Microsoft YaHei", sans-serif;
-    --vp-font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --vp-font-family-base: "WeMD WenKai", "Kaiti SC", "STKaiti", "KaiTi", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --vp-font-family-mono: "WeMD Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .dark {

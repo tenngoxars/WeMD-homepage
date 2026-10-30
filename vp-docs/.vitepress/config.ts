@@ -23,6 +23,9 @@ export default defineConfig({
 
     head: [
         ['link', { rel: 'icon', href: '/favicon.svg' }],
+        // 正文与标题的 core 字体每页都要用，先预加载；ext 交给 unicode-range 按需下载
+        ['link', { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: '', href: '/docs/fonts/wemd-wenkai-400-core.woff2' }],
+        ['link', { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: '', href: '/docs/fonts/wemd-wenkai-700-core.woff2' }],
         ['meta', { name: 'theme-color', content: '#07c160' }],
         ['meta', { property: 'og:type', content: 'website' }],
         ['meta', { property: 'og:site_name', content: 'WeMD' }],
