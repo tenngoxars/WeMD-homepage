@@ -31,9 +31,9 @@
     --vp-c-divider: rgba(0, 0, 0, 0.06);
     --vp-c-border: rgba(0, 0, 0, 0.08);
 
-    /* Typography */
-    --vp-font-family-base: "Noto Serif SC", serif;
-    --vp-font-family-mono: "JetBrains Mono", monospace;
+    /* Typography：全站用霞鹜文楷，缺字时回落到系统楷体、黑体 */
+    --vp-font-family-base: "LXGW WenKai", "Kaiti SC", "STKaiti", "KaiTi", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --vp-font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .dark {
@@ -104,18 +104,20 @@
 }
 
 /* 标题间距优化 */
+.vp-doc h1,
+.vp-doc h2 {
+    font-weight: 700;
+}
+
 .vp-doc h1 {
     margin-top: 1.5rem;
     margin-bottom: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
 }
 
 .vp-doc h2 {
     margin-top: 3rem;
     border-top: 0;
     padding-top: 0;
-    font-weight: 700;
 }
 
 /* 链接装饰 */
@@ -137,6 +139,24 @@
 .vp-doc div[class*='language-'] {
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* 表格：中文可以在任意两个字之间断行，窄列会被压成一个字一行 */
+.vp-doc table {
+    width: 100%;
+}
+
+.vp-doc th:first-child,
+.vp-doc td:first-child {
+    white-space: nowrap;
+}
+
+/* 单元格里的命令、代码和键位不拆行；窄屏靠横向滚动，不挤压说明列 */
+@media (min-width: 720px) {
+    .vp-doc th code,
+    .vp-doc td code {
+        white-space: nowrap;
+    }
 }
 
 /* 引用块 */

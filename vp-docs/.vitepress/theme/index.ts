@@ -8,6 +8,10 @@
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
+// 全站用霞鹜文楷；按 unicode-range 分片，只下载页面用到的字
+import 'lxgw-wenkai-webfont/lxgwwenkai-regular.css'
+import 'lxgw-wenkai-webfont/lxgwwenkai-bold.css'
+import '@fontsource/jetbrains-mono/400.css'
 import './style.css'
 
 export default {
