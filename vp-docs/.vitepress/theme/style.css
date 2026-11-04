@@ -146,17 +146,35 @@
     width: 100%;
 }
 
-.vp-doc th:first-child,
-.vp-doc td:first-child {
+/* 单元格里的命令、代码和键位不拆行，标识符保持完整；表格因此变宽时靠横向滚动。
+   首列不加 nowrap：它经常是一整句中文条件，不换行会把同表其它列挤成一字一行。
+   表头都是短标签，锁成一行，顺带给短标签列留出足够宽度（否则「保存」会被拆成两行）。 */
+.vp-doc th {
     white-space: nowrap;
 }
 
-/* 单元格里的命令、代码和键位不拆行；窄屏靠横向滚动，不挤压说明列 */
-@media (min-width: 720px) {
-    .vp-doc th code,
-    .vp-doc td code {
-        white-space: nowrap;
-    }
+.vp-doc th code,
+.vp-doc td code {
+    white-space: nowrap;
+}
+
+.vp-doc td {
+    overflow-wrap: break-word;
+}
+
+/* 窄屏表格靠横向滚动查看；给可滚动的表格一条可见滚动条，避免整列藏在屏幕外没提示 */
+.vp-doc table {
+    scrollbar-width: thin;
+    scrollbar-color: var(--vp-c-divider) transparent;
+}
+
+.vp-doc table::-webkit-scrollbar {
+    height: 6px;
+}
+
+.vp-doc table::-webkit-scrollbar-thumb {
+    background-color: var(--vp-c-divider);
+    border-radius: 3px;
 }
 
 /* 引用块 */

@@ -81,15 +81,17 @@ function getElementType(selector: string): ElementType {
 }
 ```
 
-**第二层：属性名与颜色特征细分。** `transformDeclarations()` 再根据每条声明的属性名决定最终类型：
+**第二层：属性名与颜色特征细分。** `transformDeclarations()` 再根据每条声明的属性名决定最终类型。
 
-| 属性 | 判定方式 | 最终类型 |
-| :--- | :--- | :--- |
-| 属性名含 `background` / `bgcolor` | 按基础类型 | `table` / `blockquote` / `selection` / `code`，其余为 `background` |
-| 属性名含 `shadow`、`border`、`outline`、`column-rule` | 看颜色：感知亮度 < 20 | `decorative-dark` |
-| 同上 | 看颜色：HSL 饱和度 > 15 | `vibrant-protected` |
-| 同上 | 其余 | 按文字处理（见下一行） |
-| 属性名含 `color`、`-webkit-text-stroke`、`-webkit-text-fill-color` 等 | 按基础类型 | `table-text` / `blockquote-text` / `selection-text` / `code-text`，其余保持基础类型 |
+背景类属性（属性名含 `background` / `bgcolor`）按基础类型输出 `table` / `blockquote` / `selection` / `code`，其余归为 `background`；文字类属性（属性名含 `color`、`-webkit-text-stroke`、`-webkit-text-fill-color` 等）按基础类型输出 `table-text` / `blockquote-text` / `selection-text` / `code-text`，其余保持基础类型。
+
+边框、阴影类属性（属性名含 `shadow`、`border`、`outline`、`column-rule`）按颜色再分：
+
+| 颜色 | 最终类型 |
+| :--- | :--- |
+| 感知亮度 < 20 | `decorative-dark` |
+| HSL 饱和度 > 15 | `vibrant-protected` |
+| 其余 | 按文字处理（见上段） |
 
 ### 背景色亮度调整
 
@@ -191,20 +193,20 @@ CSS 输出
 
 算法的阈值都写死在源码里，`convertCssToWeChatDarkMode(css)` 只接受 CSS 字符串一个参数：
 
-| 常量 | 值 | 用途 |
-| :--- | :--- | :--- |
-| `WHITE_LIKE_COLOR_BRIGHTNESS` | 250 | 感知亮度达到此值视为白色 |
-| 近白阈值（`NEAR_WHITE_PERCEIVED`） | 235 | 背景感知亮度超过此值走近白分支 |
-| `MAX_LIMIT_BGCOLOR_BRIGHTNESS` | 190 | 背景感知亮度上限 |
-| `MAX_LIMIT_OFFSET` | 138 | 文字与背景的最大感知亮度差 |
-| `HIGH_BGCOLOR_BRIGHTNESS` | 100 | 背景感知亮度达到此值视为浅色背景 |
-| `MIN_LIMIT_OFFSET_BRIGHTNESS` | 65 | 文字与背景的最小感知亮度差 |
-| `HIGH_BLACKWHITE_HSL_BRIGHTNESS` | 40 | HSL 亮度判断阈值 |
-| `CODE_MAX_BG_PERCEIVED` | 40 | 代码块背景感知亮度上限 |
-| `LOW_BLACKWHITE_HSL_BRIGHTNESS` | 22 | 背景 HSL 亮度下限 |
-| `DEFAULT_DARK_BG_L_OFFSET` | 10 | 近白背景转换时的亮度偏移 |
-| 深色装饰判定 | 感知亮度 < 20 | 边框、阴影类颜色归为 `decorative-dark` |
-| 鲜艳色判定 | 饱和度 > 15 | 边框、阴影类颜色归为 `vibrant-protected` |
+| 常量 | 用途 |
+| :--- | :--- |
+| `WHITE_LIKE_COLOR_BRIGHTNESS` = 250 | 感知亮度达到此值视为白色 |
+| 近白阈值 `NEAR_WHITE_PERCEIVED` = 235 | 背景感知亮度超过此值走近白分支 |
+| `MAX_LIMIT_BGCOLOR_BRIGHTNESS` = 190 | 背景感知亮度上限 |
+| `MAX_LIMIT_OFFSET` = 138 | 文字与背景的最大感知亮度差 |
+| `HIGH_BGCOLOR_BRIGHTNESS` = 100 | 背景感知亮度达到此值视为浅色背景 |
+| `MIN_LIMIT_OFFSET_BRIGHTNESS` = 65 | 文字与背景的最小感知亮度差 |
+| `HIGH_BLACKWHITE_HSL_BRIGHTNESS` = 40 | HSL 亮度判断阈值 |
+| `CODE_MAX_BG_PERCEIVED` = 40 | 代码块背景感知亮度上限 |
+| `LOW_BLACKWHITE_HSL_BRIGHTNESS` = 22 | 背景 HSL 亮度下限 |
+| `DEFAULT_DARK_BG_L_OFFSET` = 10 | 近白背景转换时的亮度偏移 |
+| 深色装饰判定 | 感知亮度 < 20，边框、阴影类颜色归为 `decorative-dark` |
+| 鲜艳色判定 | 饱和度 > 15，边框、阴影类颜色归为 `vibrant-protected` |
 
 源码中还有一个 `DarkModeConfig` 接口（含 `vibrantSaturationThreshold`、`vibrantLightnessRange`、`decorativeDarkLuminanceThreshold`），目前没有接入转换流程，是预留接口，修改它不会影响结果。
 
