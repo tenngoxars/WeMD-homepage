@@ -117,11 +117,12 @@
                     一款让你专注书写、告别格式烦恼的公众号编辑器。
                 </p>
 
-                <div class="mt-12 flex gap-4 animate-in delay-3">
+                <div class="mt-12 flex flex-wrap items-center gap-4 animate-in delay-3">
                     <a href="https://github.com/tenngoxars/WeMD/releases" target="_blank" rel="noopener noreferrer"
                         class="ink-btn"><span>立即下载</span></a>
                     <a href="https://edit.wemd.app" target="_blank" rel="noopener noreferrer"
                         class="ink-btn bg-white"><span>在线编辑</span></a>
+                    <button type="button" class="demo-btn interactive" data-demo-open aria-haspopup="dialog">观看演示</button>
                 </div>
             </div>
 
@@ -175,6 +176,11 @@
         </footer>
 
     </main>
+
+    <dialog id="demo-dialog" class="demo-dialog interactive" aria-label="WeMD 演示视频">
+        <button type="button" class="demo-close" data-demo-close aria-label="关闭演示视频">&times;</button>
+        <video src="/media/wemd-demo.mp4" poster="/media/wemd-demo-poster.jpg" controls playsinline preload="none"></video>
+    </dialog>
 
 </body>
 

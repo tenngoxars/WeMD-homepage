@@ -205,4 +205,87 @@
         box-shadow: 0 2px 8px rgba(6, 78, 59, 0.1);
         transform: translateY(-1px);
     }
+
+    /* 观看演示：无边框的第三个按钮，与主按钮同高同字体，悬停时出现浅底 */
+    .demo-btn {
+        @apply inline-flex items-center gap-[10px] px-[22px] rounded-lg font-mono text-[11px] uppercase tracking-[0.2em];
+        height: 41px;
+        color: var(--ink-accent);
+        transition: background 0.5s, letter-spacing 0.5s, transform 0.5s;
+    }
+
+    .demo-btn::before {
+        content: "";
+        border-style: solid;
+        border-width: 5px 0 5px 8px;
+        border-color: transparent transparent transparent currentColor;
+    }
+
+    .demo-btn:hover {
+        @apply tracking-[0.3em];
+        background: rgba(6, 78, 59, 0.06);
+        transform: translateY(-1px);
+    }
+
+    .demo-btn:focus-visible {
+        outline: 2px solid var(--ink-accent);
+        outline-offset: 2px;
+    }
+
+    /* 演示视频弹窗：原生 dialog，Esc 与焦点管理由浏览器负责 */
+    .demo-dialog {
+        width: min(92vw, 1280px);
+        max-width: none;
+        padding: 0;
+        border: 0;
+        border-radius: 14px;
+        background: #000;
+        overflow: hidden;
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 0.35);
+    }
+
+    .demo-dialog[open] {
+        animation: demo-in 0.35s ease-out;
+    }
+
+    .demo-dialog::backdrop {
+        background: rgba(26, 26, 26, 0.72);
+        backdrop-filter: blur(4px);
+    }
+
+    .demo-dialog video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #000;
+    }
+
+    .demo-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 1;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        font-size: 22px;
+        line-height: 36px;
+        text-align: center;
+    }
+
+    .demo-close:hover {
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    @keyframes demo-in {
+        from { opacity: 0; transform: translateY(12px) scale(0.98); }
+        to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .demo-dialog[open] { animation: none; }
+        .demo-btn { transition: none; }
+    }
 }

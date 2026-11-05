@@ -2,6 +2,7 @@
    两套引擎不会同时渲染；流体按需加载，切走即暂停。 */
 
 import './ascii-background.js';
+import './demo-video.js';
 
 const stage = document.getElementById('fluid-canvas');
 const asciiCanvas = stage.querySelector('canvas.bg-ascii');
