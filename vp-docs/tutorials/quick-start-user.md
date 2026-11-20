@@ -70,7 +70,7 @@ WeMD 网页版支持 PWA，无需安装桌面客户端也能获得类似桌面�
 
 ### Desktop 桌面版
 1. 前往 [Releases](https://github.com/tenngoxars/WeMD/releases) 下载桌面版安装包。
-2. 按系统选择对应文件：macOS 下载 `WeMD-<版本号>-arm64-mac.zip`，Windows 下载 `WeMD.Setup.<版本号>.exe`，Linux 下载 `WeMD-<版本号>.AppImage`。
+2. 按系统选择对应文件：macOS 下载 `WeMD_<版本号>_aarch64.dmg`，Windows 下载 `WeMD_<版本号>_x64-setup.exe`，Linux 推荐下载 `WeMD_<版本号>_amd64.deb`（另提供实验性 `WeMD_<版本号>_amd64.AppImage`）。
 3. 打开 WeMD 桌面应用。
 4. 首次打开会看到欢迎页面，点击 **「选择工作区文件夹」** 按钮。
 5. 在系统文件选择器中选择文件夹，无需额外授权。
